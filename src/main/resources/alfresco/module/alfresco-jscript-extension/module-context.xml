@@ -18,6 +18,22 @@
 <!DOCTYPE beans PUBLIC '-//SPRING//DTD BEAN//EN' 'http://www.springframework.org/dtd/spring-beans.dtd'>
 
 <beans>
+        <!-- inject version.properties into global properties-->
+        <bean id="jscript.configurationProperties"
+              class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+            <property name="locations">
+                <list>
+                    <value>classpath:alfresco/version.properties</value>
+                </list>
+            </property>
+            <property name="ignoreUnresolvablePlaceholders">
+                <value>true</value>
+            </property>
+            <property name="properties">
+                <ref bean="global-properties" />
+            </property>
+        </bean>
+
         <!-- This is filtered by Maven at build time, so that module name is single sourced. -->
         <bean id="scriptAuthentication" parent="baseJavaScriptExtension"
               class="de.jgoldhammer.alfresco.jscript.authentication.ScriptAuthentication">
@@ -103,14 +119,6 @@
 
         </bean>
 
-        <bean id="scriptLinkService" parent="baseJavaScriptExtension"
-              class="de.jgoldhammer.alfresco.jscript.links.ScriptLinkService">
-            <property name="documentLinkService" ref="DocumentLinkService"/>
-            <property name="extensionName" value="links"/>
-            <property name="serviceRegistry" ref="ServiceRegistry"/>
-
-        </bean>
-
         <bean id="scriptFavoritesService" parent="baseJavaScriptExtension"
               class="de.jgoldhammer.alfresco.jscript.favorites.ScriptFavoritesService">
             <property name="favouritesService" ref="FavouritesService"/>
@@ -164,4 +172,4 @@
         <property name="permissionService" ref="PermissionService"/>
     </bean>
 
-    </beans>
+</beans>

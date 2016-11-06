@@ -58,13 +58,17 @@ public class ScriptPermissionService extends BaseScopableProcessorExtension {
 		return permissionService.hasPermission(new NodeRef(nodeRef), permission) == AccessStatus.ALLOWED;
 	}
 
-	public boolean hasPermission(String nodeRef, String permission, String authority) {
+	public boolean hasPermission(final String nodeRef, final String permission, String authority) {
 		Preconditions.checkNotNull(nodeRef);
 		Preconditions.checkNotNull(permission);
 		Preconditions.checkNotNull(authority);
 
-		return AuthenticationUtil.runAs(() ->
-				permissionService.hasPermission(new NodeRef(nodeRef), permission) == AccessStatus.ALLOWED, authority);
+		return AuthenticationUtil.runAs(new AuthenticationUtil.RunAsWork<Boolean>() {
+			@Override
+			public Boolean doWork() throws Exception {
+				return permissionService.hasPermission(new NodeRef(nodeRef), permission) == AccessStatus.ALLOWED;
+			}
+		}, authority);
 	}
 
 	public boolean hasReadPermission(ScriptNode node) {
@@ -79,13 +83,17 @@ public class ScriptPermissionService extends BaseScopableProcessorExtension {
 	}
 
 
-	public boolean hasPermission(ScriptNode node, String permission, ScriptNode authority) {
+	public boolean hasPermission(final ScriptNode node, final String permission, ScriptNode authority) {
 		Preconditions.checkNotNull(node);
 		Preconditions.checkNotNull(permission);
 		Preconditions.checkNotNull(authority);
 
-		return AuthenticationUtil.runAs(() ->
-				permissionService.hasPermission(node.getNodeRef(), permission) == AccessStatus.ALLOWED, (String) authority.getProperties().get("userName"));
+		return AuthenticationUtil.runAs(new AuthenticationUtil.RunAsWork<Boolean>() {
+			@Override
+			public Boolean doWork() throws Exception {
+				return permissionService.hasPermission(node.getNodeRef(), permission) == AccessStatus.ALLOWED;
+			}
+		}, (String) authority.getProperties().get("userName"));
 	}
 
 

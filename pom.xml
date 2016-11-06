@@ -4,9 +4,9 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>de.jgoldhammer</groupId>
     <artifactId>alfresco-jscript-extension</artifactId>
-    <version>1.3-SNAPSHOT</version>
-    <name>Alfresco Jscript Repository Extensions</name>
-    <description>This module contains some useful Alfresco repository Javascript Objects which can be used to develop alfresco repository extensions. Most of them reuse functionality from the public service api of Alfresco.</description>
+    <version>1.2-4.2</version>
+    <name>Alfresco Jscript Repository Extensions (Alfresco 4.2 - 5.0.d)</name>
+    <description>This module contains some Alfresco repository Javascript Objects which can be used to develop alfresco repository extensions. Most of them reuse functionality from the public service api of Alfresco.</description>
     <url>https://github.com/jgoldhammer/alfresco-jscript-extensions</url>
     <packaging>jar</packaging>
 
@@ -57,7 +57,8 @@
                     Search index (i.e. the indexed content and metadata)
                  Configured in alfresco-global.properties with the 'dir.root' property.
                     -->
-            <alfresco.data.location>./alf_data_dev</alfresco.data.location>
+
+            <alfresco.data.location>./alf_data_dev-4.2</alfresco.data.location>
 
             <!-- Duplicated with alfresco.solrHome in the plugin, we need them out here to do filtering -->
             <solr.home>${alfresco.data.location}/solr</solr.home>
@@ -72,11 +73,16 @@
             <!-- Alfresco Platform webapp version, this is the original Alfresco webapp that will be
                 customized and then deployed and run by the tomcat maven plugin when
                 executing for example $ mvn clean install alfresco:run -->
-            <alfresco.platform.version>5.2.b-EA</alfresco.platform.version>
-            <!-- Alfresco Share version, so we can bring in correct alfresco-share-services artifact -->
-            <alfresco.share.version>5.2.a-EA</alfresco.share.version>
+            <!--<alfresco.platform.version>5.2.b-EA</alfresco.platform.version>-->
+        <!--<alfresco.platform.version>4.2.f</alfresco.platform.version>-->
+        <alfresco.platform.version>5.0.d</alfresco.platform.version>
 
-            <!-- JRebel Hot reloading of classpath stuff and web resource stuff -->
+        <!-- Alfresco Share version, so we can bring in correct alfresco-share-services artifact -->
+           <!-- <alfresco.share.version>4.2.f</alfresco.share.version>-->
+        <alfresco.share.version>5.0.d</alfresco.share.version>
+
+
+        <!-- JRebel Hot reloading of classpath stuff and web resource stuff -->
             <jrebel.version>1.1.6</jrebel.version>
 
             <!-- Environment to use, Alfresco Maven Plugin will
@@ -84,8 +90,8 @@
             <env>local</env>
 
             <!-- Compile with Java 7, default is 5 -->
-            <maven.compiler.source>1.8</maven.compiler.source>
-            <maven.compiler.target>1.8</maven.compiler.target>
+            <maven.compiler.source>1.7</maven.compiler.source>
+            <maven.compiler.target>1.7</maven.compiler.target>
 
     </properties>
 
@@ -120,6 +126,14 @@
             <artifactId>spring-test</artifactId>
             <version>3.2.17.RELEASE</version>
         </dependency>
+
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.12</version>
+            <scope>test</scope>
+        </dependency>
+
         <!-- https://mvnrepository.com/artifact/org.apache.sling/org.apache.sling.junit.remote -->
         <dependency>
             <groupId>com.tradeshift</groupId>
@@ -127,13 +141,15 @@
             <version>3</version>
         </dependency>
 
-        <!-- https://mvnrepository.com/artifact/com.h2database/h2 -->
+
         <dependency>
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
             <version>1.4.192</version>
             <scope>test</scope>
         </dependency>
+
+        <!--
         <dependency>
             <groupId>${alfresco.groupId}</groupId>
             <artifactId>alfresco-repository</artifactId>
@@ -147,6 +163,9 @@
                 </exclusion>
             </exclusions>
         </dependency>
+-->
+
+
         <dependency>
             <groupId>${alfresco.groupId}</groupId>
             <artifactId>alfresco-repository</artifactId>
@@ -190,22 +209,15 @@
                     <!-- This is a platform extension JAR, so we need the platform webapp (alfresco.war) -->
                     <enablePlatform>true</enablePlatform>
                     <!-- Enable Solr so we can use search, our Repo extension probably need search -->
-                    <enableSolr>true</enableSolr>
+                    <enableSolr>false</enableSolr>
                     <!-- We don't need the share.war if we don't have any UI extensions -->
-                    <enableShare>true</enableShare>
+                    <enableShare>false</enableShare>
 
                     <!--
                        JARs and AMPs that should be overlayed/applied to the Platform/Repository WAR
                        (i.e. alfresco.war)
                        -->
                     <platformModules>
-                        <!-- This AMP is needed if we are going to access the platform webapp from a Share webapp -->
-                        <moduleDependency>
-                            <groupId>${alfresco.groupId}</groupId>
-                            <artifactId>alfresco-share-services</artifactId>
-                            <version>${alfresco.share.version}</version>
-                            <type>amp</type>
-                        </moduleDependency>
 
                         <moduleDependency>
                             <groupId>de.fmaul</groupId>
@@ -220,7 +232,6 @@
                             <version>0.0.1.0-SNAPSHOT</version>
                             <type>amp</type>
                          </moduleDependency>
-
 
                         <!-- Bring in this JAR project, need to be included here, otherwise resources from META-INF
                              will not be loaded, such as the test.html page

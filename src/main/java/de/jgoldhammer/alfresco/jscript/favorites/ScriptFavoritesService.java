@@ -4,6 +4,7 @@
 package de.jgoldhammer.alfresco.jscript.favorites;
 
 import com.google.common.base.Preconditions;
+import com.google.common.collect.Lists;
 import org.alfresco.query.PagingRequest;
 import org.alfresco.query.PagingResults;
 import org.alfresco.repo.favourites.PersonFavourite;
@@ -16,6 +17,7 @@ import org.alfresco.service.cmr.favourites.FavouritesService;
 import org.alfresco.service.cmr.repository.NodeRef;
 import org.alfresco.service.namespace.NamespaceService;
 import org.alfresco.service.namespace.QName;
+import org.alfresco.util.Pair;
 import org.jbpm.graph.action.Script;
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.NativeArray;
@@ -74,7 +76,7 @@ public class ScriptFavoritesService extends BaseScopableProcessorExtension {
 			output = "ScriptNode",
 			code = "favorites.add(<Scriptnode>)",
 			type = ScriptMethodType.WRITE)
-	public ScriptNode add(ScriptNode node, final String username) {
+	public ScriptNode add(final ScriptNode node, final String username) {
 
 		Preconditions.checkNotNull(node,"Node parameter must be given");
 		Preconditions.checkNotNull(username,"username must be given");
@@ -128,7 +130,7 @@ public class ScriptFavoritesService extends BaseScopableProcessorExtension {
 		PagingResults<PersonFavourite> favourites = favouritesService.getPagedFavourites(
 				AuthenticationUtil.getRunAsUser(),
 				FavouritesService.Type.ALL_FILTER_TYPES,
-				Collections.emptyList(),
+				(List)Lists.newArrayList(Pair.NULL_PAIR),
 				new PagingRequest(startCount, limit));
 
 		List<PersonFavourite> favouritesList = favourites.getPage();

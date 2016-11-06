@@ -5,8 +5,12 @@ package de.jgoldhammer.alfresco.jscript.audit;
 
 import com.tradeshift.test.remote.Remote;
 import com.tradeshift.test.remote.RemoteTestRunner;
+import de.jgoldhammer.alfresco.jscript.BaseAlfrescoTest;
 import org.alfresco.repo.security.authentication.AuthenticationUtil;
 import org.alfresco.service.cmr.audit.AuditService;
+import org.alfresco.util.BaseAlfrescoSpringTest;
+import org.alfresco.util.BaseAlfrescoTestCase;
+import org.alfresco.util.BaseSpringTest;
 import org.apache.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Test;
@@ -21,10 +25,7 @@ import java.util.Map;
  * @author jgoldhammer
  *
  */
-@RunWith(RemoteTestRunner.class)
-@Remote(runnerClass=SpringJUnit4ClassRunner.class)
-@ContextConfiguration("classpath:alfresco/application-context.xml")
-public class TestScriptAuditService {
+public class TestScriptAuditService extends BaseAlfrescoTest{
     
     static Logger log = Logger.getLogger(TestScriptAuditService.class);
 

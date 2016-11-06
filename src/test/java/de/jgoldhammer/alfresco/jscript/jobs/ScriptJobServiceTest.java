@@ -1,17 +1,14 @@
 package de.jgoldhammer.alfresco.jscript.jobs;
 
 import de.jgoldhammer.alfresco.jscript.BaseAlfrescoTest;
-import org.alfresco.repo.dictionary.types.period.Cron;
 import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.NativeArray;
-import org.mozilla.javascript.NativeObject;
 import org.mozilla.javascript.Scriptable;
 import org.mozilla.javascript.ScriptableObject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.extensions.webscripts.ScriptableUtils;
 
 /**
  * tests for the ScriptJobService
@@ -47,7 +44,7 @@ public class ScriptJobServiceTest extends BaseAlfrescoTest{
             scriptJobService.setScope(scope);
             final NativeArray allJobs = (NativeArray) scriptJobService.getAllJobs();
             Assert.assertTrue(allJobs.getIds().length > 0);
-            ScriptJob job = (ScriptJob) allJobs.get(0);
+            ScriptJob job = (ScriptJob) allJobs.get(0, scope);
             Assert.assertNotNull(job.jobName);
             Assert.assertNotNull(job.nextFireTime);
 
