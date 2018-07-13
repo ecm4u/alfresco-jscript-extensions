@@ -159,7 +159,7 @@
 
     <bean id="scriptVariablesService" parent="baseJavaScriptExtension" class="de.jgoldhammer.alfresco.jscript.variables.ScriptVariablesService">
         <property name="properties" ref="global-properties" />
-        <property name="extensionName" value="properties" />
+        <property name="extensionName" value="globalProperties" />
     </bean>
 
     <bean id="scriptFileWriter" parent="baseJavaScriptExtension" class="de.jgoldhammer.alfresco.jscript.file.ScriptFileWriter">
