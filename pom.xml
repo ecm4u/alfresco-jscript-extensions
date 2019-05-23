@@ -126,7 +126,7 @@
 	<dependency>
 	    <groupId>org.springframework</groupId>
 	    <artifactId>spring-jdbc</artifactId>
-	    <version>4.2.9.RELEASE</version>
+	    <version>4.1.9.RELEASE</version>
 	</dependency>
         <!-- https://mvnrepository.com/artifact/org.apache.sling/org.apache.sling.junit.remote -->
         <dependency>
