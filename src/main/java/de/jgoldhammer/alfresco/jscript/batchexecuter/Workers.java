@@ -12,14 +12,14 @@ import java.util.List;
 
 /**
  * Container class for all worker implementations used by
- * {@link ScriptBatchExecuter}.
+ * {@link de.jgoldhammer.alfresco.repo.jscript.batchexecuter.ScriptBatchExecuter}.
  *
  * @author Bulat Yaminov
  */
 public class Workers {
 
     /**
-     * A de.jgoldhammer.alfresco.jscript.batch processor worker which can be canceled. When canceled it will skip any
+     * A batch processor worker which can be canceled. When canceled it will skip any
      * processing requests.
      */
     public interface CancellableWorker<T> extends BatchProcessor.BatchProcessWorker<T> {
@@ -139,7 +139,7 @@ public class Workers {
             Object resultArray = processFunction.call(Context.getCurrentContext(),
                     scope, scope, new Object[]{ itemsArray });
             if (logger.isTraceEnabled() && resultArray instanceof NativeArray) {
-                logger.trace(String.format("call on function gave %d results out of %d",
+                logger.trace(String.format("call on batch gave %d results out of %d",
                         ((NativeArray) resultArray).getIds().length, entry.size()));
             }
         }

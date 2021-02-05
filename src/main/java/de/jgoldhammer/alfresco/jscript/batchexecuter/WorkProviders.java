@@ -1,6 +1,13 @@
 package de.jgoldhammer.alfresco.jscript.batchexecuter;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Stack;
 
 import org.alfresco.model.ContentModel;
+import org.alfresco.model.RenditionModel;
 import org.alfresco.repo.batch.BatchProcessWorkProvider;
 import org.alfresco.repo.jscript.ScriptNode;
 import org.alfresco.service.ServiceRegistry;
@@ -8,32 +15,32 @@ import org.alfresco.service.cmr.dictionary.DictionaryService;
 import org.alfresco.service.cmr.repository.ChildAssociationRef;
 import org.alfresco.service.cmr.repository.NodeRef;
 import org.alfresco.service.cmr.repository.NodeService;
+import org.alfresco.service.namespace.QNamePattern;
 import org.alfresco.service.namespace.RegexQNamePattern;
 import org.apache.commons.logging.Log;
 import org.mozilla.javascript.NativeJavaObject;
 import org.mozilla.javascript.Scriptable;
 
-import java.util.*;
-
 /**
  * Container class for all work providers used by
- * {@link ScriptBatchExecuter}.
+ * {@link de.jgoldhammer.alfresco.repo.jscript.batchexecuter.ScriptBatchExecuter}.
  *
  * @author Bulat Yaminov
+ * @author Corentin Roux
  */
 public class WorkProviders {
 
 //    private static final Log logger = LogFactory.getLog(WorkProviders.class);
 
     public interface NodeOrBatchWorkProviderFactory<T> {
-        CancellableWorkProvider<Object> newNodesWorkProvider(T data, int batchSize);
-        CancellableWorkProvider<List<Object>> newBatchesWorkProvider(T data, int batchSize);
+        CancellableWorkProvider<Object> newNodesWorkProvider(T data, int batchSize, boolean browseSystemNodes);
+        CancellableWorkProvider<List<Object>> newBatchesWorkProvider(T data, int batchSize, boolean browseSystemNodes);
         String describe(T data);
     }
 
     /**
      * WorkProvider which can be notified to stop giving any new work packages.
-     * This is needed to cancel de.jgoldhammer.alfresco.jscript.batch job, as we don't have access to
+     * This is needed to cancel batch job, as we don't have access to
      * {@link org.alfresco.repo.batch.BatchProcessor}'s ExecuterService.
      */
     public interface CancellableWorkProvider<T> extends BatchProcessWorkProvider<T> {
@@ -78,12 +85,12 @@ public class WorkProviders {
         }
 
         @Override
-        public CancellableWorkProvider<Object> newNodesWorkProvider(Collection<Object> items, int batchSize) {
+        public CancellableWorkProvider<Object> newNodesWorkProvider(Collection<Object> items, int batchSize, boolean browseSystemNodes) {
             return new CollectionWorkProvider(items, batchSize);
         }
 
         @Override
-        public CancellableWorkProvider<List<Object>> newBatchesWorkProvider(Collection<Object> items, int batchSize) {
+        public CancellableWorkProvider<List<Object>> newBatchesWorkProvider(Collection<Object> items, int batchSize, boolean browseSystemNodes) {
             return new CollectionOfBatchesWorkProvider(items, batchSize);
         }
 
@@ -118,7 +125,7 @@ public class WorkProviders {
             public Collection<Object> doGetNextWork() {
                 /* Actually it is not needed to give work packages of fixed size here,
                  * but it is better for cancellation behavior */
-                List<Object> batch = new ArrayList<>(batchSize);
+                List<Object> batch = new ArrayList(batchSize);
                 while (iterator.hasNext() && batch.size() < batchSize) {
                     batch.add(iterator.next());
                 }
@@ -150,8 +157,8 @@ public class WorkProviders {
 
             @Override
             public Collection<List<Object>> doGetNextWork() {
-                // Return just one de.jgoldhammer.alfresco.jscript.batch wrapped in a singleton collection
-                List<Object> batch = new ArrayList<>();
+                // Return just one batch wrapped in a singleton collection
+                List<Object> batch = new ArrayList();
                 while (iterator.hasNext() && batch.size() < batchSize) {
                     batch.add(iterator.next());
                 }
@@ -166,44 +173,46 @@ public class WorkProviders {
 
     public static class FolderBrowsingWorkProviderFactory implements NodeOrBatchWorkProviderFactory<NodeRef> {
 
-        private ServiceRegistry serviceRegistry;
-        private NodeService nodeService;
-        private DictionaryService dictionaryService;
+        private ServiceRegistry sr;
+        private NodeService ns;
+        private DictionaryService ds;
         private Log logger;
         private Scriptable scope;
 
         public FolderBrowsingWorkProviderFactory(ServiceRegistry sr, Scriptable scope, Log logger) {
-            this.serviceRegistry = sr;
-            this.nodeService = sr.getNodeService();
-            this.dictionaryService = sr.getDictionaryService();
+            this.sr = sr;
+            this.ns = sr.getNodeService();
+            this.ds = sr.getDictionaryService();
             this.scope = scope;
             this.logger = logger;
         }
 
         @Override
-        public CancellableWorkProvider<Object> newNodesWorkProvider(NodeRef root, int batchSize) {
-            return new FolderBrowsingWorkProvider(root);
+        public CancellableWorkProvider<Object> newNodesWorkProvider(NodeRef root, int batchSize, boolean browseSystemNodes) {
+            return new FolderBrowsingWorkProvider(root, browseSystemNodes);
         }
 
         @Override
-        public CancellableWorkProvider<List<Object>> newBatchesWorkProvider(NodeRef root, int batchSize) {
-            return new FolderBrowsingInBatchesWorkProvider(root, batchSize);
+        public CancellableWorkProvider<List<Object>> newBatchesWorkProvider(NodeRef root, int batchSize, boolean browseSystemNodes) {
+            return new FolderBrowsingInBatchesWorkProvider(root, batchSize, browseSystemNodes);
         }
 
         @Override
         public String describe(NodeRef nodeRef) {
-            String name = nodeService.exists(nodeRef) ?
-                    (String) nodeService.getProperty(nodeRef, ContentModel.PROP_NAME) :
+            String name = ns.exists(nodeRef) ?
+                    (String) ns.getProperty(nodeRef, ContentModel.PROP_NAME) :
                     "deleted";
             return String.format("folder %s recursively", name);
         }
 
         private class FolderBrowsingWorkProvider extends AbstractCancellableWorkProvider<Object> {
 
-            private Stack<NodeRef> stack = new Stack<>();
+            private Stack<NodeRef> stack = new Stack();
+            private boolean browseSystemNodes;
 
-            private FolderBrowsingWorkProvider(NodeRef root) {
+            private FolderBrowsingWorkProvider(NodeRef root, boolean browseSystemNodes) {
                 stack.push(root);
+                this.browseSystemNodes = browseSystemNodes;
             }
 
             @Override
@@ -229,7 +238,7 @@ public class WorkProviders {
             }
 
             protected NativeJavaObject convertToJS(NodeRef node) {
-                ScriptNode scriptNode = new ScriptNode(node, serviceRegistry, scope);
+                ScriptNode scriptNode = new ScriptNode(node, sr, scope);
                 return new NativeJavaObject(scope, scriptNode, ScriptNode.class);
             }
 
@@ -238,19 +247,36 @@ public class WorkProviders {
                     return null;
                 }
                 NodeRef head = stack.pop();
-                if (dictionaryService.isSubClass(nodeService.getType(head), ContentModel.TYPE_FOLDER)) {
-                    if (logger.isTraceEnabled()) {
-                        logger.trace("fetching children of " + head);
-                    }
-                    List<ChildAssociationRef> children = nodeService.getChildAssocs(
-                            head, ContentModel.ASSOC_CONTAINS, RegexQNamePattern.MATCH_ALL);
-                    // Add to stack so that first child would appear as the head
-                    for (int i = children.size() - 1; i >= 0; i--) {
-                        stack.push(children.get(i).getChildRef());
-                    }
-                }
+
+				if (ds.isSubClass(ns.getType(head), ContentModel.TYPE_FOLDER) ) {
+           	 		head = pushNodes(head, ContentModel.ASSOC_CONTAINS);
+				}else if(browseSystemNodes){
+					if (ds.isSubClass(ns.getType(head), ContentModel.TYPE_CONTENT) ) {
+		           	 	head = pushNodes(head, RenditionModel.ASSOC_RENDITION);
+		           	 	head = pushNodes(head, ContentModel.ASSOC_FAILED_THUMBNAIL);
+					}else if (ds.isSubClass(ns.getType(head), ContentModel.TYPE_CONTAINER) 
+							|| ds.isSubClass(ns.getType(head), ContentModel.TYPE_STOREROOT) ) {
+		           	 	head = pushNodes(head, ContentModel.ASSOC_CHILDREN);
+	           	 		head = pushNodes(head, ContentModel.ASSOC_CONTAINS);
+					}else if (ds.isSubClass(ns.getType(head), ContentModel.TYPE_PERSON) ) {
+	           	 		head = pushNodes(head, ContentModel.ASSOC_PREFERENCE_IMAGE);
+					}
+				}
                 return head;
             }
+
+			private NodeRef pushNodes(NodeRef head, QNamePattern assoc) {
+				     if (logger.isTraceEnabled()) {
+				         logger.trace("fetching childfren of " + head +" with " +assoc);
+				     }
+				     List<ChildAssociationRef> children = ns.getChildAssocs(
+				             head, assoc, RegexQNamePattern.MATCH_ALL);
+				     // Add to stack so that first child would appear as the head
+				     for (int i = children.size() - 1; i >= 0; i--) {
+				         stack.push(children.get(i).getChildRef());
+				     }
+				return head;
+			}
         }
 
         private class FolderBrowsingInBatchesWorkProvider extends AbstractCancellableWorkProvider<List<Object>> {
@@ -258,8 +284,8 @@ public class WorkProviders {
             private FolderBrowsingWorkProvider browser;
             private int batchSize;
 
-            private FolderBrowsingInBatchesWorkProvider(NodeRef root, int batchSize) {
-                this.browser = new FolderBrowsingWorkProvider(root);
+            private FolderBrowsingInBatchesWorkProvider(NodeRef root, int batchSize, boolean browseSystemNodes) {
+                this.browser = new FolderBrowsingWorkProvider(root, browseSystemNodes);
                 this.batchSize = batchSize;
             }
 
@@ -273,10 +299,10 @@ public class WorkProviders {
                 return browser.hasMoreWork();
             }
 
-            /** Returns just one de.jgoldhammer.alfresco.jscript.batch wrapped in a collection */
+            /** Returns just one batch wrapped in a collection */
             @Override
             public Collection<List<Object>> doGetNextWork() {
-                List<Object> batch = new ArrayList<>();
+                List<Object> batch = new ArrayList();
                 while (!browser.stack.isEmpty() && batch.size() < batchSize) {
                     batch.add(browser.convertToJS(browser.pop()));
                 }

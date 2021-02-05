@@ -60,9 +60,9 @@
    </script>
 </head>
 <body>
-<h3>Jobs being executed by de.jgoldhammer.alfresco.jscript.batch executer</h3>
-<#if de.jgoldhammer.alfresco.jscript.jobs?size == 0>
-   <p>There are no de.jgoldhammer.alfresco.jscript.jobs running now</p>
+<h3>Jobs being executed by batch executer</h3>
+<#if jobs?size == 0>
+   <p>There are no jobs running now</p>
 <#else>
    <table class="moduletable">
       <thead>
@@ -78,7 +78,7 @@
       </tr>
       </thead>
       <tbody>
-      <#list de.jgoldhammer.alfresco.jscript.jobs as job>
+      <#list jobs as job>
          <tr>
             <td>${job.name}</td>
             <td>${job.batchSize?c}</td>

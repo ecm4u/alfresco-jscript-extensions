@@ -18,162 +18,143 @@
 <!DOCTYPE beans PUBLIC '-//SPRING//DTD BEAN//EN' 'http://www.springframework.org/dtd/spring-beans.dtd'>
 
 <beans>
-        <!-- This is filtered by Maven at build time, so that module name is single sourced. -->
-        <bean id="scriptAuthentication" parent="baseJavaScriptExtension"
-              class="de.jgoldhammer.alfresco.jscript.authentication.ScriptAuthentication">
-            <property name="extensionName" value="auth" />
-        </bean>
+  <!-- This is filtered by Maven at build time, so that module name is single sourced. -->
 
-        <bean id="scriptAttributeService" parent="baseJavaScriptExtension"
-              class="de.jgoldhammer.alfresco.jscript.attributes.ScriptAttributeService">
-            <property name="extensionName" value="attributes" />
-            <property name="attributeService" ref="AttributeService" />
-        </bean>
+<!--   
+  <bean id="scriptAuthentication" parent="baseJavaScriptExtension" class="de.jgoldhammer.alfresco.jscript.authentication.ScriptAuthentication">
+    <property name="extensionName" value="auth" />
+  </bean>
 
-        <bean id="scriptRuleService" parent="baseJavaScriptExtension"
-              class="de.jgoldhammer.alfresco.jscript.rules.ScriptRulesService">
-            <property name="extensionName" value="rules" />
-            <property name="ruleService" ref="RuleService" />
-        </bean>
+  <bean id="scriptAttributeService" parent="baseJavaScriptExtension" class="de.jgoldhammer.alfresco.jscript.attributes.ScriptAttributeService">
+    <property name="extensionName" value="attributes" />
+    <property name="attributeService" ref="AttributeService" />
+  </bean>
 
-        <bean id="scriptPolicies" parent="baseJavaScriptExtension"
-              class="de.jgoldhammer.alfresco.jscript.policy.ScriptPolicies">
-            <property name="extensionName" value="policies" />
-            <property name="namespaceService" ref="namespaceService" />
-            <property name="behaviourFilter" ref="policyBehaviourFilter" />
-        </bean>
+  <bean id="scriptRuleService" parent="baseJavaScriptExtension" class="de.jgoldhammer.alfresco.jscript.rules.ScriptRulesService">
+    <property name="extensionName" value="rules" />
+    <property name="ruleService" ref="RuleService" />
+  </bean>
 
-        <bean id="scriptTransactions" parent="baseJavaScriptExtension"
-              class="de.jgoldhammer.alfresco.jscript.transaction.ScriptTransactions">
-            <property name="extensionName" value="transactions" />
-            <property name="transactionService" ref="TransactionService" />
-        </bean>
+  <bean id="scriptPolicies" parent="baseJavaScriptExtension" class="de.jgoldhammer.alfresco.jscript.policy.ScriptPolicies">
+    <property name="extensionName" value="policies" />
+    <property name="namespaceService" ref="namespaceService" />
+    <property name="behaviourFilter" ref="policyBehaviourFilter" />
+  </bean>
+ -->
+  <bean id="scriptTransactions" parent="baseJavaScriptExtension" class="de.jgoldhammer.alfresco.jscript.transaction.ScriptTransactions">
+    <property name="extensionName" value="transactions" />
+    <property name="transactionService" ref="TransactionService" />
+  </bean>
 
-        <bean id="jobScriptFacade" parent="baseJavaScriptExtension"
-              class="de.jgoldhammer.alfresco.jscript.jobs.ScriptJobService">
-            <property name="extensionName" value="jobs" />
-            <property name="scheduler" ref="schedulerFactory" />
-            <property name="jobLockService" ref="jobLockService"/>
-            <property name="scriptService" ref="scriptService"/>
-        </bean>
+<!--   
+  <bean id="jobScriptFacade" parent="baseJavaScriptExtension" class="de.jgoldhammer.alfresco.jscript.jobs.ScriptJobService">
+    <property name="extensionName" value="jobs" />
+    <property name="scheduler" ref="schedulerFactory" />
+    <property name="jobLockService" ref="jobLockService"/>
+    <property name="scriptService" ref="scriptService"/>
+  </bean>
+ -->
+  <bean id="batchScriptFacade" parent="baseJavaScriptExtension" class="de.jgoldhammer.alfresco.jscript.batch.BatchScriptFacade">
+    <property name="extensionName" value="batch" />
+    <property name="transactionService" ref="TransactionService" />
+    <property name="searchService" ref="SearchService" />
+    <property name="scriptService" ref="ScriptService" />
+    <property name="serviceRegistry" ref="ServiceRegistry" />
+  </bean>
 
-        <bean id="batchScriptFacade" parent="baseJavaScriptExtension"
-              class="de.jgoldhammer.alfresco.jscript.batch.BatchScriptFacade">
-            <property name="extensionName" value="batch" />
-            <property name="transactionService" ref="TransactionService" />
-            <property name="searchService" ref="SearchService" />
-            <property name="scriptService" ref="ScriptService" />
-            <property name="serviceRegistry" ref="ServiceRegistry" />
-        </bean>
+  <bean id="batchExecuterScript" parent="baseJavaScriptExtension" class="de.jgoldhammer.alfresco.jscript.batchexecuter.ScriptBatchExecuter">
+    <property name="extensionName" value="batchExecuter"/>
+    <property name="serviceRegistry" ref="ServiceRegistry"/>
+  </bean>
 
-        <bean id="batchExecuterScript" parent="baseJavaScriptExtension"
-              class="de.jgoldhammer.alfresco.jscript.batchexecuter.ScriptBatchExecuter">
-            <property name="extensionName" value="batchExecuter"/>
-            <property name="serviceRegistry" ref="ServiceRegistry"/>
-        </bean>
+  <bean id="scriptDatabase" parent="baseJavaScriptExtension" class="de.jgoldhammer.alfresco.jscript.db.ScriptDatabaseService">
+    <property name="extensionName" value="database" />
+  </bean>
 
-        <bean id="scriptDatabase" parent="baseJavaScriptExtension"
-              class="de.jgoldhammer.alfresco.jscript.db.ScriptDatabaseService">
-            <property name="extensionName" value="database" />
-        </bean>
+<!--   
+  <bean id="scriptAudit" parent="baseJavaScriptExtension" class="de.jgoldhammer.alfresco.jscript.audit.ScriptAuditService">
+    <property name="extensionName" value="audit" />
+    <property name="auditService" ref="AuditService" />
+  </bean>
 
-        <bean id="scriptAudit" parent="baseJavaScriptExtension"
-              class="de.jgoldhammer.alfresco.jscript.audit.ScriptAuditService">
-            <property name="extensionName" value="audit" />
-            <property name="auditService" ref="AuditService" />
-        </bean>
+  <bean id="scriptRepoAdminConsole" parent="baseJavaScriptExtension" class="de.jgoldhammer.alfresco.jscript.repoadmin.ScriptRepoAdminConsole">
+    <property name="extensionName" value="repoAdmin" />
+    <property name="repoAdminInterpreter" ref="repoAdminInterpreter" />
+  </bean>
 
-        <bean id="scriptRepoAdminConsole" parent="baseJavaScriptExtension"
-              class="de.jgoldhammer.alfresco.jscript.repoadmin.ScriptRepoAdminConsole">
-            <property name="extensionName" value="repoAdmin" />
-            <property name="repoAdminInterpreter" ref="repoAdminInterpreter" />
-        </bean>
+  <bean id="scriptTenantAdminConsole" parent="baseJavaScriptExtension" class="de.jgoldhammer.alfresco.jscript.tenant.ScriptTenantAdminConsole">
+    <property name="extensionName" value="tenantAdmin" />
+    <property name="tenantInterpreter" ref="tenantInterpreter" />
+  </bean>
 
-        <bean id="scriptTenantAdminConsole" parent="baseJavaScriptExtension"
-              class="de.jgoldhammer.alfresco.jscript.tenant.ScriptTenantAdminConsole">
-            <property name="extensionName" value="tenantAdmin" />
-            <property name="tenantInterpreter" ref="tenantInterpreter" />
-        </bean>
+  <bean id="scriptWorkflowConsole" parent="baseJavaScriptExtension" class="de.jgoldhammer.alfresco.jscript.workflow.ScriptWorkflowConsole">
+    <property name="extensionName" value="workflowAdmin" />
+    <property name="workflowInterpreter" ref="workflowInterpreter" />
+  </bean>
+ -->
+  <bean id="scriptRenditionService" parent="baseJavaScriptExtension" class="de.jgoldhammer.alfresco.jscript.renditions.ScriptRenditionService">
+    <property name="extensionName" value="renditions"/>
+    <property name="serviceRegistry" ref="ServiceRegistry"/>
+    <property name="renditionService" ref="RenditionService"/>
+  </bean>
+<!-- 
+  <bean id="scriptQuickshareService" parent="baseJavaScriptExtension" class="de.jgoldhammer.alfresco.jscript.quickshare.ScriptQuickshareService">
+    <property name="quickShareService" ref="quickShareService"/>
+    <property name="extensionName" value="quickshares"/>
+  </bean>
+ -->
+  <bean id="scriptLinkService" parent="baseJavaScriptExtension" class="de.jgoldhammer.alfresco.jscript.links.ScriptLinkService">
+    <property name="documentLinkService" ref="DocumentLinkService"/>
+    <property name="extensionName" value="links"/>
+    <property name="serviceRegistry" ref="ServiceRegistry"/>
+  </bean>
 
-        <bean id="scriptWorkflowConsole" parent="baseJavaScriptExtension"
-              class="de.jgoldhammer.alfresco.jscript.workflow.ScriptWorkflowConsole">
-            <property name="extensionName" value="workflowAdmin" />
-            <property name="workflowInterpreter" ref="workflowInterpreter" />
-        </bean>
+  <bean id="scriptFavoritesService" parent="baseJavaScriptExtension" class="de.jgoldhammer.alfresco.jscript.favorites.ScriptFavoritesService">
+    <property name="favouritesService" ref="FavouritesService"/>
+    <property name="extensionName" value="favorites"/>
+    <property name="serviceRegistry" ref="ServiceRegistry"/>
+  </bean>
 
-        <bean id="scriptRenditionService" parent="baseJavaScriptExtension"
-              class="de.jgoldhammer.alfresco.jscript.renditions.ScriptRenditionService">
-            <property name="extensionName" value="renditions"/>
-            <property name="serviceRegistry" ref="ServiceRegistry"/>
-            <property name="renditionService" ref="RenditionService"/>
-        </bean>
+  <bean id="scriptDownloadService" parent="baseJavaScriptExtension" class="de.jgoldhammer.alfresco.jscript.download.ScriptDownloadService">
+    <property name="extensionName" value="downloads"/>
+    <property name="downloadService" ref="DownloadService"/>
+    <property name="serviceRegistry" ref="ServiceRegistry"/>
 
-        <bean id="scriptQuickshareService" parent="baseJavaScriptExtension"
-          class="de.jgoldhammer.alfresco.jscript.quickshare.ScriptQuickshareService">
-            <property name="quickShareService" ref="quickShareService"/>
-            <property name="extensionName" value="quickshares"/>
+  </bean>
 
-        </bean>
+  <bean id="scriptDictionaryService" parent="baseJavaScriptExtension" class="de.jgoldhammer.alfresco.jscript.dictionary.ScriptDictionaryService">
+    <property name="dictionaryService" ref="DictionaryService"/>
+    <property name="extensionName" value="dictionary"/>
+    <property name="namespaceService" ref="NamespaceService"/>
 
-        <bean id="scriptLinkService" parent="baseJavaScriptExtension"
-              class="de.jgoldhammer.alfresco.jscript.links.ScriptLinkService">
-            <property name="documentLinkService" ref="DocumentLinkService"/>
-            <property name="extensionName" value="links"/>
-            <property name="serviceRegistry" ref="ServiceRegistry"/>
+  </bean>
 
-        </bean>
+  <bean id="scriptRepositoryService" parent="baseJavaScriptExtension" class="de.jgoldhammer.alfresco.jscript.repository.ScriptRepository">
+    <property name="extensionName" value="repository"/>
+    <property name="repository" ref="repositoryHelper"/>
+    <property name="serviceRegistry" ref="ServiceRegistry"/>
+    <property name="siteService" ref="SiteService"/>
+    <property name="docLibNodeLocator" ref="docLibNodeLocator"/>
+    <property name="personService" ref="PersonService"/>
 
-        <bean id="scriptFavoritesService" parent="baseJavaScriptExtension"
-              class="de.jgoldhammer.alfresco.jscript.favorites.ScriptFavoritesService">
-            <property name="favouritesService" ref="FavouritesService"/>
-            <property name="extensionName" value="favorites"/>
-            <property name="serviceRegistry" ref="ServiceRegistry"/>
-        </bean>
+  </bean>
+<!-- 
+  <bean id="scriptVariablesService" parent="baseJavaScriptExtension" class="de.jgoldhammer.alfresco.jscript.variables.ScriptVariablesService">
+    <property name="properties" ref="global-properties" />
+    <property name="extensionName" value="globalProperties" />
+  </bean>
+ -->
+  <bean id="scriptFileWriter" parent="baseJavaScriptExtension" class="de.jgoldhammer.alfresco.jscript.file.ScriptFileWriter">
+    <property name="extensionName" value="fileWriter"/>
+    <property name="mailService" ref="mailService"/>
+    <property name="namespaceService" ref="NamespaceService"/>
+    <property name="fileFolderService" ref="FileFolderService"/>
+    <property name="serviceRegistry" ref="ServiceRegistry"/>
+    <property name="mimetypeService" ref="MimetypeService"/>
+  </bean>
 
-        <bean id="scriptDownloadService" parent="baseJavaScriptExtension"
-              class="de.jgoldhammer.alfresco.jscript.download.ScriptDownloadService">
-            <property name="extensionName" value="downloads"/>
-            <property name="downloadService" ref="DownloadService"/>
-            <property name="serviceRegistry" ref="ServiceRegistry"/>
-
-        </bean>
-
-        <bean id="scriptDictionaryService" parent="baseJavaScriptExtension"
-              class="de.jgoldhammer.alfresco.jscript.dictionary.ScriptDictionaryService">
-            <property name="dictionaryService" ref="DictionaryService"/>
-            <property name="extensionName" value="dictionary"/>
-            <property name="namespaceService" ref="NamespaceService"/>
-
-        </bean>
-
-        <bean id="scriptRepositoryService" parent="baseJavaScriptExtension"
-              class="de.jgoldhammer.alfresco.jscript.repository.ScriptRepository">
-            <property name="extensionName" value="repository"/>
-            <property name="repository" ref="repositoryHelper"/>
-            <property name="serviceRegistry" ref="ServiceRegistry"/>
-            <property name="siteService" ref="SiteService"/>
-            <property name="docLibNodeLocator" ref="docLibNodeLocator"/>
-            <property name="personService" ref="PersonService"/>
-
-        </bean>
-
-    <bean id="scriptVariablesService" parent="baseJavaScriptExtension" class="de.jgoldhammer.alfresco.jscript.variables.ScriptVariablesService">
-        <property name="properties" ref="global-properties" />
-        <property name="extensionName" value="globalProperties" />
-    </bean>
-
-    <bean id="scriptFileWriter" parent="baseJavaScriptExtension" class="de.jgoldhammer.alfresco.jscript.file.ScriptFileWriter">
-        <property name="extensionName" value="fileWriter"/>
-        <property name="mailService" ref="mailService"/>
-        <property name="namespaceService" ref="NamespaceService"/>
-        <property name="fileFolderService" ref="FileFolderService"/>
-        <property name="serviceRegistry" ref="ServiceRegistry"/>
-        <property name="mimetypeService" ref="MimetypeService"/>
-    </bean>
-
-    <bean id="scriptPermissionService" parent="baseJavaScriptExtension" class="de.jgoldhammer.alfresco.jscript.permission.ScriptPermissionService">
-        <property name="extensionName" value="permissions"/>
-        <property name="permissionService" ref="PermissionService"/>
-    </bean>
-
-    </beans>
+  <bean id="scriptPermissionService" parent="baseJavaScriptExtension" class="de.jgoldhammer.alfresco.jscript.permission.ScriptPermissionService">
+    <property name="extensionName" value="permissions"/>
+    <property name="permissionService" ref="PermissionService"/>
+  </bean>
+</beans>

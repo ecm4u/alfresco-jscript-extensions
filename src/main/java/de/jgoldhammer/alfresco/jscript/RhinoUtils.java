@@ -120,7 +120,11 @@ public class RhinoUtils {
                             " must have a ScriptNode as Java object, but has instead: " + o);
                 }
             } else {
+            	if (map.get(key) instanceof ScriptNode) {
+                    result = (ScriptNode) map.get(key);
+                } else {
                 throw new IllegalArgumentException(key + " must be a JavaObject, but is instead: " + map.get(key));
+                }
             }
         }
         return result;
