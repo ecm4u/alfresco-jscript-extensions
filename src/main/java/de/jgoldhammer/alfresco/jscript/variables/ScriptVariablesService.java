@@ -24,10 +24,6 @@ public class ScriptVariablesService extends BaseScopableProcessorExtension imple
     private Properties properties;
     
     public void setProperties(final Properties globalProperties) {
-		AuthorityService authorityService = (AuthorityService) applicationContext.getBean("authorityService");
-		if (!authorityService.isAdminAuthority(AuthenticationUtil.getFullyAuthenticatedUser())) {
-			throw new RuntimeException("you are not allowed to access properties!");
-		}
         properties = globalProperties;
     }
 
