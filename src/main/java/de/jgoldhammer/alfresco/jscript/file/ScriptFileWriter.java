@@ -4,7 +4,6 @@ import com.google.common.base.Preconditions;
 import org.alfresco.error.AlfrescoRuntimeException;
 import org.alfresco.repo.jscript.BaseScopableProcessorExtension;
 import org.alfresco.repo.jscript.ScriptNode;
-import org.alfresco.repo.mail.AlfrescoJavaMailSender;
 import org.alfresco.service.ServiceRegistry;
 import org.alfresco.service.cmr.model.FileFolderService;
 import org.alfresco.service.cmr.model.FileFolderServiceType;

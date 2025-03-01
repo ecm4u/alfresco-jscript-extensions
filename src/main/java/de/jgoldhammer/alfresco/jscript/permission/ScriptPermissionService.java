@@ -20,7 +20,6 @@ package de.jgoldhammer.alfresco.jscript.permission;
 
 import com.google.common.base.Preconditions;
 import org.alfresco.repo.jscript.BaseScopableProcessorExtension;
-import org.alfresco.repo.jscript.People;
 import org.alfresco.repo.jscript.ScriptNode;
 import org.alfresco.repo.security.authentication.AuthenticationUtil;
 import org.alfresco.repo.transaction.RetryingTransactionHelper;

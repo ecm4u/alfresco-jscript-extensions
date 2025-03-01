@@ -4,7 +4,6 @@ import com.google.common.base.Preconditions;
 import org.alfresco.repo.jscript.ScriptNode;
 import org.alfresco.repo.model.filefolder.HiddenAspect;
 import org.alfresco.repo.model.filefolder.HiddenFileInfo;
-import org.alfresco.service.cmr.repository.NodeRef;
 
 /**
  * wraps the api to hide nodes for certain clients or completely...

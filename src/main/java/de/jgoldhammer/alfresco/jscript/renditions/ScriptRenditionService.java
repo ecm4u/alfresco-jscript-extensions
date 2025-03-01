@@ -1,17 +1,12 @@
 package de.jgoldhammer.alfresco.jscript.renditions;
 
 import org.alfresco.repo.jscript.BaseScopableProcessorExtension;
-import org.alfresco.repo.jscript.Scopeable;
 import org.alfresco.repo.jscript.ScriptNode;
 import org.alfresco.service.ServiceRegistry;
 import org.alfresco.service.cmr.rendition.RenditionService;
-import org.alfresco.service.cmr.repository.ChildAssociationRef;
-import org.mozilla.javascript.Context;
-import org.mozilla.javascript.Scriptable;
 import org.springframework.extensions.webscripts.annotation.ScriptClass;
 import org.springframework.extensions.webscripts.annotation.ScriptClassType;
 
-import java.util.List;
 
 /**
  * wraps some methods of the renditionservice.

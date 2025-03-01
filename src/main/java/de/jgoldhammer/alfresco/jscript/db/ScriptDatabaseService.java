@@ -1,6 +1,5 @@
 package de.jgoldhammer.alfresco.jscript.db;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -10,7 +9,6 @@ import org.alfresco.error.AlfrescoRuntimeException;
 import org.alfresco.repo.processor.BaseProcessorExtension;
 import org.alfresco.repo.security.authentication.AuthenticationUtil;
 import org.alfresco.service.cmr.security.AuthorityService;
-import org.alfresco.service.cmr.security.PermissionService;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
@@ -21,9 +19,6 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcDaoSupport;
 import org.springframework.jdbc.core.support.JdbcDaoSupport;
 
 import com.google.common.base.Preconditions;
-
-import net.sf.acegisecurity.Authentication;
-import net.sf.acegisecurity.GrantedAuthority;
 
 /**
  * javascript rootobject

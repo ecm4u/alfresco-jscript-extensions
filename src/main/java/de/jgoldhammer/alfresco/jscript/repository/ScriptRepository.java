@@ -1,6 +1,5 @@
 package de.jgoldhammer.alfresco.jscript.repository;
 
-import com.google.common.util.concurrent.Service;
 import org.alfresco.repo.jscript.BaseScopableProcessorExtension;
 import org.alfresco.repo.jscript.ScriptNode;
 import org.alfresco.repo.model.Repository;
