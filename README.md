@@ -57,7 +57,15 @@ Following root objects are provided:
 * **auth**
 	* to change the authentication to another user during the javascript execution
 	* to get the current executing authenticated user
-	* example: tbd
+	* example:  
+		```javascript
+		auth.runAs("demo");
+		auth.runAsFullyAuthenticatedUser("demo");
+		
+		auth.runAsSystem();
+		print("runAs: "+auth.getRunAsUser());
+		print("FullyAuthenticatedUser: "+auth.getFullyAuthenticatedUser());
+		```
 		
 * **batch** 
 	* to provide a simple batch processing for javascript without any native functions
