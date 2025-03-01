@@ -5,6 +5,10 @@ package de.jgoldhammer.alfresco.jscript.authentication;
 
 import org.alfresco.repo.processor.BaseProcessorExtension;
 import org.alfresco.repo.security.authentication.AuthenticationUtil;
+import org.alfresco.service.cmr.security.AuthorityService;
+import org.springframework.beans.BeansException;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 import org.springframework.extensions.webscripts.annotation.ScriptClass;
 import org.springframework.extensions.webscripts.annotation.ScriptClassType;
 import org.springframework.extensions.webscripts.annotation.ScriptMethod;
@@ -16,24 +20,51 @@ import org.springframework.extensions.webscripts.annotation.ScriptMethodType;
  * @author Jens Goldhammer (fme AG)
  */
 
+ /**
+  * example usage:
+  *
+  * auth.runAs("user-a");
+  * auth.runAsFullyAuthenticatedUser("user-b");
+  * 
+  * auth.runAsSystem();
+  * print("runAs: "+auth.getRunAsUser());
+  * print("FullyAuthenticatedUser: "+auth.getFullyAuthenticatedUser());
+  *
+  */
+
 @ScriptClass(types=ScriptClassType.JavaScriptRootObject, code="auth", help="the root object for the de.jgoldhammer.alfresco.jscript.authentication util to switch the authenticated user ")
-public class ScriptAuthentication extends BaseProcessorExtension {
+public class ScriptAuthentication extends BaseProcessorExtension implements ApplicationContextAware {
+
+	private ApplicationContext applicationContext;
+
+	@Override
+	public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+		this.applicationContext = applicationContext;
+	}
 
 	@ScriptMethod(
     		help="Set the system user as the currently running user for authentication purposes.",
     		output="void",
     		code="auth.runAsSystem()",
     		type=ScriptMethodType.READ)
-    public void runAsSystem(){
-    	AuthenticationUtil.setRunAsUserSystem();
-    }
+	public void runAsSystem() {
+		AuthorityService authorityService = (AuthorityService) applicationContext.getBean("authorityService");
+		if (!authorityService.isAdminAuthority(AuthenticationUtil.getFullyAuthenticatedUser())) {
+			throw new RuntimeException("you are not allowed to runAs method");
+		}
+		AuthenticationUtil.setRunAsUserSystem();
+	}
 
     @ScriptMethod(
     		help="Switch to the given user for all authenticated operations.  The original, authenticated user can still be found using auth.getFullyAuthenticatedUser()",
     		output="void",
-    		code="auth.runAsUser('user1');",
+    		code="auth.runAs('user1');",
     		type=ScriptMethodType.READ)
     public void runAs(String userName){
+		AuthorityService authorityService = (AuthorityService) applicationContext.getBean("authorityService");
+		if (!authorityService.isAdminAuthority(AuthenticationUtil.getFullyAuthenticatedUser())) {
+			throw new RuntimeException("you are not allowed to runAs method");
+		}
     	AuthenticationUtil.setRunAsUser(userName) ;
     }
 
@@ -64,7 +95,12 @@ public class ScriptAuthentication extends BaseProcessorExtension {
     		type=ScriptMethodType.READ)
 
     public void runAsFullyAuthenticatedUser(String userName){
-    	 AuthenticationUtil.setFullyAuthenticatedUser(userName);
+		AuthorityService authorityService = (AuthorityService) applicationContext.getBean("authorityService");
+		if (!authorityService.isAdminAuthority(AuthenticationUtil.getFullyAuthenticatedUser())) {
+			throw new RuntimeException("you are not allowed to runAs method");
+		}
+
+		AuthenticationUtil.setFullyAuthenticatedUser(userName);
     }
 
 
@@ -87,8 +123,5 @@ public class ScriptAuthentication extends BaseProcessorExtension {
     public String getAdminUserName(){
     	return AuthenticationUtil.getAdminUserName();
     }
-
-
-
 
 }

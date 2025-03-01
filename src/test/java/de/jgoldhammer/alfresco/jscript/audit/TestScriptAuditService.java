@@ -7,7 +7,8 @@ import com.tradeshift.test.remote.Remote;
 import com.tradeshift.test.remote.RemoteTestRunner;
 import org.alfresco.repo.security.authentication.AuthenticationUtil;
 import org.alfresco.service.cmr.audit.AuditService;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -26,7 +27,7 @@ import java.util.Map;
 @ContextConfiguration("classpath:alfresco/application-context.xml")
 public class TestScriptAuditService {
     
-    static Logger log = Logger.getLogger(TestScriptAuditService.class);
+    static Logger log = LoggerFactory.getLogger(TestScriptAuditService.class);
 
     @Autowired
     protected ScriptAuditService scriptAuditService;

@@ -3,7 +3,8 @@ package de.jgoldhammer.alfresco.jscript.db;
 
 import com.tradeshift.test.remote.Remote;
 import com.tradeshift.test.remote.RemoteTestRunner;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -41,7 +42,7 @@ import static org.junit.Assert.assertNotNull;
 @ContextConfiguration("classpath:alfresco/application-context.xml")
 public class TestScriptDatabaseService {
     
-    static Logger log = Logger.getLogger(TestScriptDatabaseService.class);
+    static Logger log = LoggerFactory.getLogger(TestScriptDatabaseService.class);
 
     @Autowired
     protected ScriptDatabaseService scriptDatabaseService;

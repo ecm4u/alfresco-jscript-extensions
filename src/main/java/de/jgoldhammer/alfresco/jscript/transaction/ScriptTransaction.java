@@ -3,7 +3,7 @@
  */
 package de.jgoldhammer.alfresco.jscript.transaction;
 
-import javax.transaction.*;
+import jakarta.transaction.*;
 
 /**
  * deals with the de.jgoldhammer.alfresco.jscript.transaction object.

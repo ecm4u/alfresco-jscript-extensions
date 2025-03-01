@@ -22,7 +22,8 @@ package de.jgoldhammer.alfresco.jscript.ticket;
 import org.alfresco.repo.jscript.BaseScopableProcessorExtension;
 import org.alfresco.repo.security.authentication.TicketComponent;
 import org.alfresco.service.ServiceRegistry;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * retrieves the ticket for the current user.
@@ -61,7 +62,7 @@ public class TicketScriptExtension extends BaseScopableProcessorExtension {
 		this.ticketComponent = ticketComponent;
 	}
 
-	private Logger logger = Logger.getLogger(getClass());
+	private Logger logger = LoggerFactory.getLogger(getClass());
 
 	public String getCurrentTicket() {
 		return serviceRegistry.getAuthenticationService().getCurrentTicket();

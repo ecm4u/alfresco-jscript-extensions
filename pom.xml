@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>de.jgoldhammer</groupId>
     <artifactId>alfresco-jscript-extension</artifactId>
-    <version>1.9.0-SNAPSHOT</version>
+    <version>1.10.0-SNAPSHOT</version>
     <name>Alfresco Jscript Repository Extensions</name>
     <description>This module contains some useful Alfresco repository Javascript Objects which can be used to develop alfresco repository extensions. Most of them reuse functionality from the public service api of Alfresco.</description>
     <url>https://github.com/jgoldhammer/alfresco-jscript-extensions</url>
@@ -17,12 +17,11 @@
         </license>
     </licenses>
 
-    <scm>
-        <connection>scm:git:git@github.com:jgoldhammer/alfresco-jscript-extensions.git</connection>
-        <developerConnection>scm:git:git@github.com:jgoldhammer/alfresco-jscript-extensions.git</developerConnection>
-        <url>git@github.com:jgoldhammer/alfresco-jscript-extensions.git</url>
-        <tag>HEAD</tag>
-    </scm>
+    <parent>
+        <groupId>de.ecm4u.alfresco</groupId>
+        <artifactId>ecm4u-parent</artifactId>
+        <version>23.3.0</version>
+    </parent>
 
     <developers>
         <developer>
@@ -66,15 +65,7 @@
 
             <!-- Properties used in dependency declarations, you don't need to change these -->
             <alfresco.groupId>org.alfresco</alfresco.groupId>
-            <!-- Platform WAR artifact, change to 'alfresco-enterprise' if using Enterprise Edition -->
-            <alfresco.platform.war.artifactId>alfresco-platform</alfresco.platform.war.artifactId>
 
-            <!-- Alfresco Platform webapp version, this is the original Alfresco webapp that will be
-                customized and then deployed and run by the tomcat maven plugin when
-                executing for example $ mvn clean install alfresco:run -->
-            <alfresco.platform.version>5.2.g</alfresco.platform.version>
-            <!-- Alfresco Share version, so we can bring in correct alfresco-share-services artifact -->
-            <alfresco.share.version>5.2.f</alfresco.share.version>
 
             <!-- JRebel Hot reloading of classpath stuff and web resource stuff -->
             <jrebel.version>1.1.6</jrebel.version>
@@ -83,9 +74,8 @@
                  copy alfresco-global-*.properties files from this directory, such as src/test/properties/local -->
             <env>local</env>
 
-            <!-- Compile with Java 7, default is 5 -->
-            <maven.compiler.source>1.8</maven.compiler.source>
-            <maven.compiler.target>1.8</maven.compiler.target>
+            <maven.compiler.source>17</maven.compiler.source>
+            <maven.compiler.target>17</maven.compiler.target>
 
     </properties>
 
@@ -97,13 +87,13 @@
     -->
     <dependencyManagement>
         <dependencies>
-            <dependency>
-                <groupId>${alfresco.groupId}</groupId>
-                <artifactId>alfresco-platform-distribution</artifactId>
-                <version>${alfresco.platform.version}</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
+			<dependency>
+				<groupId>${alfresco.groupId}</groupId>
+				<artifactId>acs-community-packaging</artifactId>
+				<version>${alfresco.platform.version}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
         </dependencies>
     </dependencyManagement>
 
@@ -122,6 +112,13 @@
             <version>3.2.17.RELEASE</version>
             <scope>provided</scope>
         </dependency>
+
+        <dependency>
+			<groupId>jakarta.mail</groupId>
+			<artifactId>jakarta.mail-api</artifactId>
+			<version>2.1.3</version>
+			<scope>provided</scope>
+		</dependency>
 	<!-- https://mvnrepository.com/artifact/org.springframework/spring-jdbc -->
 	<dependency>
 	    <groupId>org.springframework</groupId>
@@ -143,6 +140,7 @@
             <version>2.1.210</version>
             <scope>test</scope>
         </dependency>
+        <!--
         <dependency>
             <groupId>${alfresco.groupId}</groupId>
             <artifactId>alfresco-repository</artifactId>
@@ -169,6 +167,7 @@
                 </exclusion>
             </exclusions>
         </dependency>
+        -->
 
     </dependencies>
 

@@ -49,6 +49,7 @@
             <property name="transactionService" ref="TransactionService" />
         </bean>
 
+        <!--
         <bean id="jobScriptFacade" parent="baseJavaScriptExtension"
               class="de.jgoldhammer.alfresco.jscript.jobs.ScriptJobService">
             <property name="extensionName" value="jobs" />
@@ -56,6 +57,7 @@
             <property name="jobLockService" ref="jobLockService"/>
             <property name="scriptService" ref="scriptService"/>
         </bean>
+        -->
 
         <bean id="batchScriptFacade" parent="baseJavaScriptExtension"
               class="de.jgoldhammer.alfresco.jscript.batch.BatchScriptFacade">

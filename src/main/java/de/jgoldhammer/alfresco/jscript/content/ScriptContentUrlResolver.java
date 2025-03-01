@@ -1,12 +1,12 @@
 package de.jgoldhammer.alfresco.jscript.content;
 
 import com.google.common.base.Preconditions;
-import org.alfresco.repo.domain.node.Node;
 import org.alfresco.repo.jscript.BaseScopableProcessorExtension;
 import org.alfresco.service.cmr.model.FileFolderService;
 import org.alfresco.service.cmr.model.FileInfo;
 import org.alfresco.service.cmr.repository.NodeRef;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.util.Assert;
 
@@ -18,7 +18,7 @@ import org.springframework.util.Assert;
  */
 public class ScriptContentUrlResolver extends BaseScopableProcessorExtension implements InitializingBean {
 
-  private final static Logger LOG = Logger.getLogger(ScriptContentUrlResolver.class);
+  private final static Logger LOG = LoggerFactory.getLogger(ScriptContentUrlResolver.class);
 
   private FileFolderService fileFolderService;
 
