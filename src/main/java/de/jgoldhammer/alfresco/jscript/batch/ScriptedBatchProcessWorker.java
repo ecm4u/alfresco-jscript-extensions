@@ -6,7 +6,8 @@ import org.alfresco.repo.security.authentication.AuthenticationUtil;
 import org.alfresco.service.ServiceRegistry;
 import org.alfresco.service.cmr.repository.NodeRef;
 import org.alfresco.service.cmr.repository.ScriptService;
-import org.apache.commons.lang.StringUtils;
+
+import org.springframework.util.StringUtils;
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.Scriptable;
 
@@ -53,7 +54,7 @@ public final class ScriptedBatchProcessWorker implements BatchProcessWorker<Coll
 			AuthenticationUtil.setRunAsUserSystem();
 		}
 
-		if(StringUtils.isNotBlank(beforeProcessFunction)){
+		if(StringUtils.hasText(beforeProcessFunction)){
 			Object[] scriptNodes = createScriptNodes(this.nodeRefs);
 			scriptService.executeScriptString("javascript", beforeProcessFunction+BEFORE_PROCESSING_SCRIPT, createNodesModel(scriptNodes));
 		}
@@ -62,7 +63,7 @@ public final class ScriptedBatchProcessWorker implements BatchProcessWorker<Coll
 
 	@Override
 	public void afterProcess() throws Throwable {
-		if(StringUtils.isNotBlank(afterProcessFuntion)){
+		if(StringUtils.hasText(afterProcessFuntion)){
 			Object[] scriptNodes = createScriptNodes(this.nodeRefs);
 			scriptService.executeScriptString("javascript", afterProcessFuntion+AFTER_PROCESSING_SCRIPT, createNodesModel(scriptNodes));
 		}

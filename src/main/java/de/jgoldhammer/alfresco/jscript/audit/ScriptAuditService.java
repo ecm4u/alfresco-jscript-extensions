@@ -8,7 +8,7 @@ import org.alfresco.repo.jscript.BaseScopableProcessorExtension;
 import org.alfresco.service.cmr.audit.AuditQueryParameters;
 import org.alfresco.service.cmr.audit.AuditService;
 import org.alfresco.service.cmr.audit.AuditService.AuditQueryCallback;
-import org.apache.commons.lang.StringUtils;
+import org.springframework.util.StringUtils;
 
 import java.io.Serializable;
 import java.util.Map;
@@ -150,11 +150,11 @@ public class ScriptAuditService extends BaseScopableProcessorExtension {
 			params.setForward(forward);
 		}
 
-		if (StringUtils.isNotBlank(appName)) {
+		if (StringUtils.hasText(appName)) {
 			params.setApplicationName(appName);
 		}
 
-		if (StringUtils.isNotBlank(user)) {
+		if (StringUtils.hasText(user)) {
 			params.setUser(user);
 		}
 

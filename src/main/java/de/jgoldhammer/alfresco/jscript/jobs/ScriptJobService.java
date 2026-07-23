@@ -8,7 +8,7 @@ import org.alfresco.repo.jscript.BaseScopableProcessorExtension;
 import org.alfresco.repo.lock.JobLockService;
 import org.alfresco.service.cmr.repository.ScriptService;
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+// import org.apache.log4j.Logger;
 import org.mozilla.javascript.Context;
 
 
@@ -19,10 +19,10 @@ import org.quartz.JobDataMap;
 import org.quartz.JobDetail;
 import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
-import org.quartz.SchedulerFactory;
-import org.quartz.SimpleTrigger;
+// import org.quartz.SchedulerFactory;
+// import org.quartz.SimpleTrigger;
 import org.quartz.Trigger;
-import org.quartz.TriggerUtils;
+// import org.quartz.TriggerUtils;
 
 
 

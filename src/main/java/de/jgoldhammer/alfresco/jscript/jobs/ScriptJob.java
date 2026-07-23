@@ -4,12 +4,11 @@
 package de.jgoldhammer.alfresco.jscript.jobs;
 
 import org.alfresco.error.AlfrescoRuntimeException;
-import org.apache.commons.lang.StringUtils;
 import org.quartz.JobExecutionContext;
 import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
 
-import javax.management.*;
+// import javax.management.*;
 import java.util.Date;
 import java.util.List;
 
