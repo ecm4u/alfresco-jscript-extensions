@@ -1,7 +1,7 @@
 package de.jgoldhammer.alfresco.jscript;
 
 import org.alfresco.repo.jscript.ScriptNode;
-import org.apache.commons.lang.StringUtils;
+import org.springframework.util.StringUtils;
 import org.mozilla.javascript.*;
 
 import java.util.*;
@@ -48,7 +48,7 @@ public class RhinoUtils {
         if (map.get(key) != null) {
             if (map.get(key) instanceof String) {
                    String value = ((String) map.get(key));
-                    if(StringUtils.isNotBlank(value)){
+                    if(StringUtils.hasText(value)){
                         result = value;
                     }
             } else {

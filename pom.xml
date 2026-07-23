@@ -186,6 +186,16 @@
                 in an embedded Tomcat with the H2 database.
                 -->
             <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.13.0</version>
+                <configuration>
+                    <compilerArgs>
+                    <arg>-parameters</arg>
+                    </compilerArgs>
+                </configuration>
+            </plugin>
+            <plugin>
                 <groupId>org.alfresco.maven.plugin</groupId>
                 <artifactId>alfresco-maven-plugin</artifactId>
                 <version>${alfresco.sdk.version}</version>
@@ -271,6 +281,7 @@
             </plugin>
 
             <!-- Hot reloading with JRebel -->
+            <!--
             <plugin>
                 <groupId>org.zeroturnaround</groupId>
                 <artifactId>jrebel-maven-plugin</artifactId>
@@ -285,28 +296,18 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <!-- For more information about how to configure JRebel plugin see:
-                         http://manuals.zeroturnaround.com/jrebel/standalone/maven.html#maven-rebel-xml -->
                     <classpath>
                         <fallback>all</fallback>
                         <resources>
                             <resource>
-                                <!--
-                                Empty resource element marks default configuration. By
-                                default it is placed first in generated configuration.
-                                -->
                             </resource>
                         </resources>
                     </classpath>
 
-                    <!--
-                      alwaysGenerate - default is false
-                      If 'false' - rebel.xml is generated if timestamps of pom.xml and the current rebel.xml file are not equal.
-                      If 'true' - rebel.xml will always be generated
-                    -->
                     <alwaysGenerate>true</alwaysGenerate>
                 </configuration>
             </plugin>
+            -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-resources-plugin</artifactId>
