@@ -49,16 +49,6 @@
             <property name="transactionService" ref="TransactionService" />
         </bean>
 
-        <!--
-        <bean id="jobScriptFacade" parent="baseJavaScriptExtension"
-              class="de.jgoldhammer.alfresco.jscript.jobs.ScriptJobService">
-            <property name="extensionName" value="jobs" />
-            <property name="scheduler" ref="schedulerFactory" />
-            <property name="jobLockService" ref="jobLockService"/>
-            <property name="scriptService" ref="scriptService"/>
-        </bean>
-        -->
-
         <bean id="batchScriptFacade" parent="baseJavaScriptExtension"
               class="de.jgoldhammer.alfresco.jscript.batch.BatchScriptFacade">
             <property name="extensionName" value="batch" />
@@ -66,12 +56,6 @@
             <property name="searchService" ref="SearchService" />
             <property name="scriptService" ref="ScriptService" />
             <property name="serviceRegistry" ref="ServiceRegistry" />
-        </bean>
-
-        <bean id="batchExecuterScript" parent="baseJavaScriptExtension"
-              class="de.jgoldhammer.alfresco.jscript.batchexecuter.ScriptBatchExecuter">
-            <property name="extensionName" value="batchExecuter"/>
-            <property name="serviceRegistry" ref="ServiceRegistry"/>
         </bean>
 
         <bean id="scriptDatabase" parent="baseJavaScriptExtension"
@@ -101,13 +85,6 @@
               class="de.jgoldhammer.alfresco.jscript.workflow.ScriptWorkflowConsole">
             <property name="extensionName" value="workflowAdmin" />
             <property name="workflowInterpreter" ref="workflowInterpreter" />
-        </bean>
-
-        <bean id="scriptRenditionService" parent="baseJavaScriptExtension"
-              class="de.jgoldhammer.alfresco.jscript.renditions.ScriptRenditionService">
-            <property name="extensionName" value="renditions"/>
-            <property name="serviceRegistry" ref="ServiceRegistry"/>
-            <property name="renditionService" ref="RenditionService"/>
         </bean>
 
         <bean id="scriptQuickshareService" parent="baseJavaScriptExtension"
