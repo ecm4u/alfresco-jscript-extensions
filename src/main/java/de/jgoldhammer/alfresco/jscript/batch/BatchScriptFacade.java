@@ -53,35 +53,28 @@ public class BatchScriptFacade extends BaseProcessorExtension implements Scopeab
 	}
 
 	/**
-	 * process the given processorfunction on a set of nodes which are the
-	 * result of the provided luceneQuery. The processing takes place in a de.jgoldhammer.alfresco.jscript.batch
-	 * processor with the given batchName, the number of workerthreads and the
-	 * number of nodes as batchsize.
+	 * process the given processorfunction on a set of nodes which are the result of
+	 * the provided luceneQuery. The processing takes place in a
+	 * de.jgoldhammer.alfresco.jscript.batch processor with the given batchName, the
+	 * number of workerthreads and the number of nodes as batchsize.
 	 *
-	 * @param batchName
-	 *            the name of the de.jgoldhammer.alfresco.jscript.batch
-	 * @param workerThreads
-	 *            the number of threads which can be used for the de.jgoldhammer.alfresco.jscript.batch
-	 *            processing
-	 * @param batchSize
-	 * 				size of the batch
-	 * @param luceneQuery
-	 *            the lucene query to execute to make the processing on the
-	 *            nodes of the resultset
-	 * @param processorFunction
-	 *            the javascript function to process- the function must have the
-	 *            named "process"
+	 * @param batchName             the name of the
+	 *                              de.jgoldhammer.alfresco.jscript.batch
+	 * @param workerThreads         the number of threads which can be used for the
+	 *                              de.jgoldhammer.alfresco.jscript.batch processing
+	 * @param batchSize             size of the batch
+	 * @param luceneQuery           the lucene query to execute to make the
+	 *                              processing on the nodes of the resultset
+	 * @param processorFunction     the javascript function to process- the function
+	 *                              must have the named "process"
 	 *
-	 *            Example:
-	 *            de.jgoldhammer.alfresco.jscript.batch.runForQuery('MyProcessor',4,10,'TEXT:alfresco',function
-	 *            process(node){ logger.error(node); }, true);
-	 * @param runAsSystem
-	 *            true if the processing should be run as system, false to
-	 *            process as the current user
-	 * @param beforeProcessFunction
-	 * 				the function to run before the processing
-	 * @param afterProcessFunction
-	 * 				the function to run after the processing
+	 *                              Example:
+	 *                              de.jgoldhammer.alfresco.jscript.batch.runForQuery('MyProcessor',4,10,'TEXT:alfresco',function
+	 *                              process(node){ logger.error(node); }, true);
+	 * @param runAsSystem           true if the processing should be run as system,
+	 *                              false to process as the current user
+	 * @param beforeProcessFunction the function to run before the processing
+	 * @param afterProcessFunction  the function to run after the processing
 	 *
 	 */
 	@ScriptMethod(code = "batch.run('MyProcessor',4,10,'TEXT:alfresco',function process(node){logger.error(node);}, true);", help = "", output = "nothing", type = ScriptMethodType.WRITE)
@@ -104,12 +97,12 @@ public class BatchScriptFacade extends BaseProcessorExtension implements Scopeab
 				searchResult.setBulkFetch(false);
 
 				processor = new BatchProcessor<>(batchName, transactionService.getRetryingTransactionHelper(),
-						new QueryResultBatchProcessWorkProvider(searchResult, batchSize, serviceRegistry), workerThreads, FIXED_BATCH_SIZE, null,
-						null, FIXED_BATCH_SIZE);
+						new QueryResultBatchProcessWorkProvider(searchResult, batchSize, serviceRegistry),
+						workerThreads, FIXED_BATCH_SIZE, null, null, FIXED_BATCH_SIZE);
 
-				processor.process(
-						new ScriptedBatchProcessWorker(runAsSystem, batchScope, processorFunction, null, beforeProcessFunction,
-								afterProcessFunction, Context.getCurrentContext(), serviceRegistry, scriptService), true);
+				processor.process(new ScriptedBatchProcessWorker(runAsSystem, batchScope, processorFunction, null,
+						beforeProcessFunction, afterProcessFunction, Context.getCurrentContext(), serviceRegistry,
+						scriptService), true);
 			}
 		} finally {
 			searchResult.close();
@@ -119,33 +112,28 @@ public class BatchScriptFacade extends BaseProcessorExtension implements Scopeab
 
 	/**
 	 * process the given processorfunction on a set of nodes which are given as
-	 * native array. The processing takes place in a de.jgoldhammer.alfresco.jscript.batch processor with the
-	 * given batchName, the number of workerthreads and the number of nodes as
-	 * batchsize.
+	 * native array. The processing takes place in a
+	 * de.jgoldhammer.alfresco.jscript.batch processor with the given batchName, the
+	 * number of workerthreads and the number of nodes as batchsize.
 	 *
-	 * @param batchName
-	 *            the name of the de.jgoldhammer.alfresco.jscript.batch
-	 * @param workerThreads
-	 *            the number of threads which can be used for the de.jgoldhammer.alfresco.jscript.batch
-	 *            processing
-	 * @param batchSize
-	 * 			size of the batch
-	 * @param scriptNodes
-	 *            the array of scriptnodes to process (if you have your own
-	 *            logic to determine the nodes)
-	 * @param processorFunction
-	 *            the javascript function to process- the function must have the
-	 *            named "process"
+	 * @param batchName             the name of the
+	 *                              de.jgoldhammer.alfresco.jscript.batch
+	 * @param workerThreads         the number of threads which can be used for the
+	 *                              de.jgoldhammer.alfresco.jscript.batch processing
+	 * @param batchSize             size of the batch
+	 * @param scriptNodes           the array of scriptnodes to process (if you have
+	 *                              your own logic to determine the nodes)
+	 * @param processorFunction     the javascript function to process- the function
+	 *                              must have the named "process"
 	 *
-	 *            Example: de.jgoldhammer.alfresco.jscript.batch.runForNodes('MyProcessor', 4, 10, nodes,
-	 *            function process(node){ logger.error(node); }, true);
-	 * @param runAsSystem
-	 *            true if the processing should be run as system, false to
-	 *            process as the current user
-	 * @param beforeProcessFunction
-	 * 				the function to run before the processing
-	 * @param afterProcessFunction
-	 * 				the function to run after the processing
+	 *                              Example:
+	 *                              de.jgoldhammer.alfresco.jscript.batch.runForNodes('MyProcessor',
+	 *                              4, 10, nodes, function process(node){
+	 *                              logger.error(node); }, true);
+	 * @param runAsSystem           true if the processing should be run as system,
+	 *                              false to process as the current user
+	 * @param beforeProcessFunction the function to run before the processing
+	 * @param afterProcessFunction  the function to run after the processing
 	 *
 	 */
 	@SuppressWarnings("unchecked")
@@ -154,155 +142,145 @@ public class BatchScriptFacade extends BaseProcessorExtension implements Scopeab
 			final String processorFunction, final boolean runAsSystem, final String beforeProcessFunction,
 			final String afterProcessFunction) {
 
-		
 		List<ScriptNode> nodes = new ArrayList<>();
-		scriptNodes.forEach(sn -> { 
-			nodes.add((ScriptNode)sn);
+		scriptNodes.forEach(sn -> {
+			nodes.add((ScriptNode) sn);
 		});
-		//scriptNodes.stream().map(sn -> (ScriptNode)sn).collect(Collectors.toList());		
-		
+		// scriptNodes.stream().map(sn -> (ScriptNode)sn).collect(Collectors.toList());
+
 		BatchProcessor<Collection<ScriptNode>> processor;
 		final Scriptable batchScope = this.scope;
 
 		processor = new BatchProcessor<>(batchName, transactionService.getRetryingTransactionHelper(),
-				new SimpleListWorkProvider(nodes, batchSize), workerThreads, FIXED_BATCH_SIZE, null, null, FIXED_BATCH_SIZE);
+				new SimpleListWorkProvider(nodes, batchSize), workerThreads, FIXED_BATCH_SIZE, null, null,
+				FIXED_BATCH_SIZE);
 
-        	processor.process(new ScriptedBatchProcessWorker(runAsSystem, batchScope, processorFunction, nodes,
-                                beforeProcessFunction, afterProcessFunction, Context.getCurrentContext(), serviceRegistry, scriptService), true);
+		processor.process(
+				new ScriptedBatchProcessWorker(runAsSystem, batchScope, processorFunction, nodes, beforeProcessFunction,
+						afterProcessFunction, Context.getCurrentContext(), serviceRegistry, scriptService),
+				true);
 
 	}
-        
+
 	/**
 	 * process the given processorfunction on a set of nodes which are given as
-	 * native array. The processing takes place in a de.jgoldhammer.alfresco.jscript.batch processor with the
-	 * given batchName, the number of workerthreads and the number of nodes as
-	 * batchsize.
+	 * native array. The processing takes place in a
+	 * de.jgoldhammer.alfresco.jscript.batch processor with the given batchName, the
+	 * number of workerthreads and the number of nodes as batchsize.
 	 *
-	 * @param batchName
-	 *            the name of the de.jgoldhammer.alfresco.jscript.batch
-	 * @param workerThreads
-	 *            the number of threads which can be used for the de.jgoldhammer.alfresco.jscript.batch
-	 *            processing
-	 * @param batchSize
-	 * 			size of the batch
-	 * @param nodeRefsAsStrings
-	 *            the array of NodeRef strings to process (if you have your own
-	 *            logic to determine the nodes)
-	 * @param processorFunction
-	 *            the javascript function to process- the function must have the
-	 *            named "process"
+	 * @param batchName             the name of the
+	 *                              de.jgoldhammer.alfresco.jscript.batch
+	 * @param workerThreads         the number of threads which can be used for the
+	 *                              de.jgoldhammer.alfresco.jscript.batch processing
+	 * @param batchSize             size of the batch
+	 * @param nodeRefsAsStrings     the array of NodeRef strings to process (if you
+	 *                              have your own logic to determine the nodes)
+	 * @param processorFunction     the javascript function to process- the function
+	 *                              must have the named "process"
 	 *
-	 *            Example: de.jgoldhammer.alfresco.jscript.batch.runForNodes('MyProcessor', 4, 10, nodes,
-	 *            function process(node){ logger.error(node); }, true);
-	 * @param runAsSystem
-	 *            true if the processing should be run as system, false to
-	 *            process as the current user
-	 * @param beforeProcessFunction
-	 * 				the function to run before the processing
-	 * @param afterProcessFunction
-	 * 				the function to run after the processing
+	 *                              Example:
+	 *                              de.jgoldhammer.alfresco.jscript.batch.runForNodes('MyProcessor',
+	 *                              4, 10, nodes, function process(node){
+	 *                              logger.error(node); }, true);
+	 * @param runAsSystem           true if the processing should be run as system,
+	 *                              false to process as the current user
+	 * @param beforeProcessFunction the function to run before the processing
+	 * @param afterProcessFunction  the function to run after the processing
 	 *
 	 */
 	@ScriptMethod(code = "de.jgoldhammer.alfresco.jscript.batch.run('MyProcessor',4,10,'TEXT:alfresco',function process(node){logger.error(node);}, true);", help = "", output = "nothing", type = ScriptMethodType.WRITE)
-	public void runForNodeRefs(String batchName, int workerThreads, final int batchSize, final NativeArray nodeRefsAsStrings,
-			final String processorFunction, final boolean runAsSystem, final String beforeProcessFunction,
-			final String afterProcessFunction) {
+	public void runForNodeRefs(String batchName, int workerThreads, final int batchSize,
+			final NativeArray nodeRefsAsStrings, final String processorFunction, final boolean runAsSystem,
+			final String beforeProcessFunction, final String afterProcessFunction) {
 
 		BatchProcessor<Collection<ScriptNode>> processor;
 		final Scriptable batchScope = this.scope;
 		List<NodeRef> nodeRefs = convertNodeRefsAsStringsArray(nodeRefsAsStrings);
-		
+
 		List<ScriptNode> nodes = new ArrayList<>();
-		nodeRefs.forEach(nodeRef -> { 
-			nodes.add(new ScriptNode(nodeRef, serviceRegistry));
+		nodeRefs.forEach(nodeRef -> {
+			nodes.add(new ScriptNode(nodeRef, serviceRegistry, batchScope));
 		});
 
 		processor = new BatchProcessor<>(batchName, transactionService.getRetryingTransactionHelper(),
-				new SimpleListWorkProvider(nodes, batchSize), workerThreads, FIXED_BATCH_SIZE, null, null, FIXED_BATCH_SIZE);
+				new SimpleListWorkProvider(nodes, batchSize), workerThreads, FIXED_BATCH_SIZE, null, null,
+				FIXED_BATCH_SIZE);
 
-        	processor.process(new ScriptedBatchProcessWorker(runAsSystem, batchScope, processorFunction, nodes,
-                                beforeProcessFunction, afterProcessFunction, Context.getCurrentContext(), serviceRegistry, scriptService), true);
+		processor.process(
+				new ScriptedBatchProcessWorker(runAsSystem, batchScope, processorFunction, nodes, beforeProcessFunction,
+						afterProcessFunction, Context.getCurrentContext(), serviceRegistry, scriptService),
+				true);
 
 	}
-        
+
 	/**
 	 * Process the given processorfunction on a set of nodes in which are given as
-	 * native array in a background Thread. The processing takes place in a de.jgoldhammer.alfresco.jscript.batch processor with the
-	 * given batchName, the number of workerthreads and the number of nodes as
-	 * batchsize.
+	 * native array in a background Thread. The processing takes place in a
+	 * de.jgoldhammer.alfresco.jscript.batch processor with the given batchName, the
+	 * number of workerthreads and the number of nodes as batchsize.
 	 *
-	 * @param batchName
-	 *            the name of the de.jgoldhammer.alfresco.jscript.batch
-	 * @param workerThreads
-	 *            the number of threads which can be used for the de.jgoldhammer.alfresco.jscript.batch
-	 *            processing
-	 * @param batchSize
-	 * 			size of the batch
-	 * @param scriptNodes
-	 *            the array of scriptnodes to process (if you have your own
-	 *            logic to determine the nodes)
-	 * @param processorFunction
-	 *            the javascript function to process- the function must have the
-	 *            named "process"
+	 * @param batchName             the name of the
+	 *                              de.jgoldhammer.alfresco.jscript.batch
+	 * @param workerThreads         the number of threads which can be used for the
+	 *                              de.jgoldhammer.alfresco.jscript.batch processing
+	 * @param batchSize             size of the batch
+	 * @param scriptNodes           the array of scriptnodes to process (if you have
+	 *                              your own logic to determine the nodes)
+	 * @param processorFunction     the javascript function to process- the function
+	 *                              must have the named "process"
 	 *
-	 *            Example: de.jgoldhammer.alfresco.jscript.batch.runForNodes('MyProcessor', 4, 10, nodes,
-	 *            function process(node){ logger.error(node); }, true);
-	 * @param runAsSystem
-	 *            true if the processing should be run as system, false to
-	 *            process as the current user
-	 * @param beforeProcessFunction
-	 * 				the function to run before the processing
-	 * @param afterProcessFunction
-	 * 				the function to run after the processing
+	 *                              Example:
+	 *                              de.jgoldhammer.alfresco.jscript.batch.runForNodes('MyProcessor',
+	 *                              4, 10, nodes, function process(node){
+	 *                              logger.error(node); }, true);
+	 * @param runAsSystem           true if the processing should be run as system,
+	 *                              false to process as the current user
+	 * @param beforeProcessFunction the function to run before the processing
+	 * @param afterProcessFunction  the function to run after the processing
 	 *
 	 */
 	@ScriptMethod(code = "de.jgoldhammer.alfresco.jscript.batch.run('MyProcessor',4,10,'TEXT:alfresco',function process(node){logger.error(node);}, true);", help = "", output = "nothing", type = ScriptMethodType.WRITE)
-	public void runForNodesInThread(String batchName, int workerThreads, final int batchSize, final NativeArray scriptNodes,
-			final String processorFunction, final boolean runAsSystem, final String beforeProcessFunction,
-			final String afterProcessFunction) {
+	public void runForNodesInThread(String batchName, int workerThreads, final int batchSize,
+			final NativeArray scriptNodes, final String processorFunction, final boolean runAsSystem,
+			final String beforeProcessFunction, final String afterProcessFunction) {
 
 		BatchProcessor<Collection<ScriptNode>> processor;
 		final Scriptable batchScope = this.scope;
-		//List<NodeRef> nodeRefs = convertScriptNodesArray(scriptNodes);
-		
+		// List<NodeRef> nodeRefs = convertScriptNodesArray(scriptNodes);
+
 		List<ScriptNode> nodes = new ArrayList<>();
-		scriptNodes.forEach(sn -> { 
-			nodes.add((ScriptNode)sn);
+		scriptNodes.forEach(sn -> {
+			nodes.add((ScriptNode) sn);
 		});
 
 		processor = new BatchProcessor<>(batchName, transactionService.getRetryingTransactionHelper(),
-				new SimpleListWorkProvider(nodes, batchSize), workerThreads, FIXED_BATCH_SIZE, null, null, FIXED_BATCH_SIZE);
+				new SimpleListWorkProvider(nodes, batchSize), workerThreads, FIXED_BATCH_SIZE, null, null,
+				FIXED_BATCH_SIZE);
 
-                final ScriptedBatchProcessWorker scriptedBatchProcessWorker = new ScriptedBatchProcessWorker(
-                    runAsSystem,
-                    batchScope,
-                    processorFunction,
-                    nodes,
-                    beforeProcessFunction,
-                    afterProcessFunction,
-                    Context.getCurrentContext(),
-                    serviceRegistry,
-                    scriptService);
-                
-                Runner p = new Runner(processor, scriptedBatchProcessWorker);
-                new Thread(p).start();
+		final ScriptedBatchProcessWorker scriptedBatchProcessWorker = new ScriptedBatchProcessWorker(runAsSystem,
+				batchScope, processorFunction, nodes, beforeProcessFunction, afterProcessFunction,
+				Context.getCurrentContext(), serviceRegistry, scriptService);
+
+		Runner p = new Runner(processor, scriptedBatchProcessWorker);
+		new Thread(p).start();
 	}
-        
-        private static class Runner implements Runnable {
-            
-            private final BatchProcessor<Collection<ScriptNode>> processor;
-            private final ScriptedBatchProcessWorker scriptedBatchProcessWorker;
 
-            private Runner(BatchProcessor<Collection<ScriptNode>> processor, ScriptedBatchProcessWorker scriptedBatchProcessWorker) {
-                this.processor = processor;
-                this.scriptedBatchProcessWorker = scriptedBatchProcessWorker;
-            }
+	private static class Runner implements Runnable {
 
-            @Override
-            public void run() {
-                processor.process(scriptedBatchProcessWorker, true);
-            }
-        }
+		private final BatchProcessor<Collection<ScriptNode>> processor;
+		private final ScriptedBatchProcessWorker scriptedBatchProcessWorker;
+
+		private Runner(BatchProcessor<Collection<ScriptNode>> processor,
+				ScriptedBatchProcessWorker scriptedBatchProcessWorker) {
+			this.processor = processor;
+			this.scriptedBatchProcessWorker = scriptedBatchProcessWorker;
+		}
+
+		@Override
+		public void run() {
+			processor.process(scriptedBatchProcessWorker, true);
+		}
+	}
 
 	/**
 	 * converts the native array of scriptnodes to a list of noderefs
@@ -314,16 +292,16 @@ public class BatchScriptFacade extends BaseProcessorExtension implements Scopeab
 		List<NodeRef> nodes = new ArrayList<>();
 		for (Object id : scriptNodes.getIds()) {
 			int index = (Integer) id;
-                        Object obj = scriptNodes.get(index);
-                        if (obj instanceof NativeJavaObject) {
-                            obj = ((NativeJavaObject) obj).unwrap();
-                        }
+			Object obj = scriptNodes.get(index);
+			if (obj instanceof NativeJavaObject) {
+				obj = ((NativeJavaObject) obj).unwrap();
+			}
 			ScriptNode scriptNode = (ScriptNode) obj;
 			nodes.add(scriptNode.getNodeRef());
 		}
 		return nodes;
 	}
-        
+
 	/**
 	 * converts the native array of NodeRef strings to a list of noderefs
 	 *
@@ -334,10 +312,10 @@ public class BatchScriptFacade extends BaseProcessorExtension implements Scopeab
 		List<NodeRef> nodes = new ArrayList<>();
 		for (Object id : nodeRefsAsStrings.getIds()) {
 			int index = (Integer) id;
-                        Object obj = nodeRefsAsStrings.get(index);
-                        if (obj instanceof NativeJavaObject) {
-                            obj = ((NativeJavaObject) obj).unwrap();
-                        }
+			Object obj = nodeRefsAsStrings.get(index);
+			if (obj instanceof NativeJavaObject) {
+				obj = ((NativeJavaObject) obj).unwrap();
+			}
 			String nodeRefAsString = (String) obj;
 			nodes.add(new NodeRef(nodeRefAsString));
 		}
