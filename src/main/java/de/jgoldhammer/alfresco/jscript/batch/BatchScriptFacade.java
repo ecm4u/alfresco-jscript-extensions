@@ -189,7 +189,7 @@ public class BatchScriptFacade extends BaseProcessorExtension implements Scopeab
 	 *
 	 */
 	@ScriptMethod(code = "de.jgoldhammer.alfresco.jscript.batch.run('MyProcessor',4,10,'TEXT:alfresco',function process(node){logger.error(node);}, true);", help = "", output = "nothing", type = ScriptMethodType.WRITE)
-	public void runForNodeRefs(String batchName, int workerThreads, final int batchSize,
+	public List<ScriptNode> runForNodeRefs(String batchName, int workerThreads, final int batchSize,
 			final NativeArray nodeRefsAsStrings, final String processorFunction, final boolean runAsSystem,
 			final String beforeProcessFunction, final String afterProcessFunction) {
 
@@ -211,6 +211,7 @@ public class BatchScriptFacade extends BaseProcessorExtension implements Scopeab
 						afterProcessFunction, Context.getCurrentContext(), serviceRegistry, scriptService),
 				true);
 
+		return nodes;
 	}
 
 	/**
