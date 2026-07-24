@@ -4,6 +4,7 @@
 package de.jgoldhammer.alfresco.jscript.batch;
 
 import org.alfresco.repo.batch.BatchProcessWorkProvider;
+import org.alfresco.repo.jscript.ScriptNode;
 import org.alfresco.service.cmr.repository.NodeRef;
 
 import java.util.ArrayList;
@@ -17,9 +18,9 @@ import java.util.List;
  * @author Jens Goldhammer
  *
  */
-public class SimpleListWorkProvider implements BatchProcessWorkProvider<Collection<NodeRef>> {
+public class SimpleListWorkProvider implements BatchProcessWorkProvider<Collection<ScriptNode>> {
 
-    private List<NodeRef> simpleList;
+    private List<ScriptNode> simpleList;
     private final int collectSize;
 	private final int size;
 	private int index = 0;
@@ -30,7 +31,7 @@ public class SimpleListWorkProvider implements BatchProcessWorkProvider<Collecti
 	 * @param  listSize
 	 * 			the size of the list
      */
-    public SimpleListWorkProvider(List<NodeRef> simpleList, final int listSize) {
+    public SimpleListWorkProvider(List<ScriptNode> simpleList, final int listSize) {
         this.simpleList = simpleList;
 		this.collectSize = listSize;
 		this.size = this.simpleList.size();
@@ -47,17 +48,17 @@ public class SimpleListWorkProvider implements BatchProcessWorkProvider<Collecti
 	 * {@inheritDoc}
 	 */
 	@Override
-	public synchronized Collection<Collection<NodeRef>> getNextWork() {
-		final Collection<Collection<NodeRef>> items;
+	public synchronized Collection<Collection<ScriptNode>> getNextWork() {
+		final Collection<Collection<ScriptNode>> items;
 		if (this.size > this.index) {
-			items = new ArrayList<Collection<NodeRef>>();
-			List<NodeRef> nodes = new ArrayList<NodeRef>();
+			items = new ArrayList<Collection<ScriptNode>>();
+			List<ScriptNode> nodes = new ArrayList<>();
 			items.add(nodes);
 			for (int size = 0; size < this.collectSize && this.size > this.index; this.index++, size++) {
 				nodes.add(this.simpleList.get(this.index));
 			}
 		} else {
-			items = new ArrayList<Collection<NodeRef>>();
+			items = new ArrayList<>();
 		}
 		return items;
 	}

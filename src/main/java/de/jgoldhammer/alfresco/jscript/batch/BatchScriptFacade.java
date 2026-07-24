@@ -22,6 +22,8 @@ import org.springframework.extensions.webscripts.annotation.ScriptMethodType;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
+
 import org.mozilla.javascript.NativeJavaObject;
 
 /**
@@ -94,7 +96,7 @@ public class BatchScriptFacade extends BaseProcessorExtension implements Scopeab
 		params.addStore(StoreRef.STORE_REF_WORKSPACE_SPACESSTORE);
 
 		final ResultSet searchResult = searchService.query(params);
-		BatchProcessor<Collection<NodeRef>> processor;
+		BatchProcessor<Collection<ScriptNode>> processor;
 		final Scriptable batchScope = this.scope;
 
 		try {
@@ -102,7 +104,7 @@ public class BatchScriptFacade extends BaseProcessorExtension implements Scopeab
 				searchResult.setBulkFetch(false);
 
 				processor = new BatchProcessor<>(batchName, transactionService.getRetryingTransactionHelper(),
-						new QueryResultBatchProcessWorkProvider(searchResult, batchSize), workerThreads, FIXED_BATCH_SIZE, null,
+						new QueryResultBatchProcessWorkProvider(searchResult, batchSize, serviceRegistry), workerThreads, FIXED_BATCH_SIZE, null,
 						null, FIXED_BATCH_SIZE);
 
 				processor.process(
@@ -146,19 +148,26 @@ public class BatchScriptFacade extends BaseProcessorExtension implements Scopeab
 	 * 				the function to run after the processing
 	 *
 	 */
+	@SuppressWarnings("unchecked")
 	@ScriptMethod(code = "de.jgoldhammer.alfresco.jscript.batch.run('MyProcessor',4,10,'TEXT:alfresco',function process(node){logger.error(node);}, true);", help = "", output = "nothing", type = ScriptMethodType.WRITE)
 	public void runForNodes(String batchName, int workerThreads, final int batchSize, final NativeArray scriptNodes,
 			final String processorFunction, final boolean runAsSystem, final String beforeProcessFunction,
 			final String afterProcessFunction) {
 
-		BatchProcessor<Collection<NodeRef>> processor;
+		
+		List<ScriptNode> nodes = new ArrayList<>();
+		scriptNodes.forEach(sn -> { 
+			nodes.add((ScriptNode)sn);
+		});
+		//scriptNodes.stream().map(sn -> (ScriptNode)sn).collect(Collectors.toList());		
+		
+		BatchProcessor<Collection<ScriptNode>> processor;
 		final Scriptable batchScope = this.scope;
-		List<NodeRef> nodeRefs = convertScriptNodesArray(scriptNodes);
 
 		processor = new BatchProcessor<>(batchName, transactionService.getRetryingTransactionHelper(),
-				new SimpleListWorkProvider(nodeRefs, batchSize), workerThreads, FIXED_BATCH_SIZE, null, null, FIXED_BATCH_SIZE);
+				new SimpleListWorkProvider(nodes, batchSize), workerThreads, FIXED_BATCH_SIZE, null, null, FIXED_BATCH_SIZE);
 
-        	processor.process(new ScriptedBatchProcessWorker(runAsSystem, batchScope, processorFunction, nodeRefs,
+        	processor.process(new ScriptedBatchProcessWorker(runAsSystem, batchScope, processorFunction, nodes,
                                 beforeProcessFunction, afterProcessFunction, Context.getCurrentContext(), serviceRegistry, scriptService), true);
 
 	}
@@ -199,14 +208,19 @@ public class BatchScriptFacade extends BaseProcessorExtension implements Scopeab
 			final String processorFunction, final boolean runAsSystem, final String beforeProcessFunction,
 			final String afterProcessFunction) {
 
-		BatchProcessor<Collection<NodeRef>> processor;
+		BatchProcessor<Collection<ScriptNode>> processor;
 		final Scriptable batchScope = this.scope;
 		List<NodeRef> nodeRefs = convertNodeRefsAsStringsArray(nodeRefsAsStrings);
+		
+		List<ScriptNode> nodes = new ArrayList<>();
+		nodeRefs.forEach(nodeRef -> { 
+			nodes.add(new ScriptNode(nodeRef, serviceRegistry));
+		});
 
 		processor = new BatchProcessor<>(batchName, transactionService.getRetryingTransactionHelper(),
-				new SimpleListWorkProvider(nodeRefs, batchSize), workerThreads, FIXED_BATCH_SIZE, null, null, FIXED_BATCH_SIZE);
+				new SimpleListWorkProvider(nodes, batchSize), workerThreads, FIXED_BATCH_SIZE, null, null, FIXED_BATCH_SIZE);
 
-        	processor.process(new ScriptedBatchProcessWorker(runAsSystem, batchScope, processorFunction, nodeRefs,
+        	processor.process(new ScriptedBatchProcessWorker(runAsSystem, batchScope, processorFunction, nodes,
                                 beforeProcessFunction, afterProcessFunction, Context.getCurrentContext(), serviceRegistry, scriptService), true);
 
 	}
@@ -247,18 +261,23 @@ public class BatchScriptFacade extends BaseProcessorExtension implements Scopeab
 			final String processorFunction, final boolean runAsSystem, final String beforeProcessFunction,
 			final String afterProcessFunction) {
 
-		BatchProcessor<Collection<NodeRef>> processor;
+		BatchProcessor<Collection<ScriptNode>> processor;
 		final Scriptable batchScope = this.scope;
-		List<NodeRef> nodeRefs = convertScriptNodesArray(scriptNodes);
+		//List<NodeRef> nodeRefs = convertScriptNodesArray(scriptNodes);
+		
+		List<ScriptNode> nodes = new ArrayList<>();
+		scriptNodes.forEach(sn -> { 
+			nodes.add((ScriptNode)sn);
+		});
 
 		processor = new BatchProcessor<>(batchName, transactionService.getRetryingTransactionHelper(),
-				new SimpleListWorkProvider(nodeRefs, batchSize), workerThreads, FIXED_BATCH_SIZE, null, null, FIXED_BATCH_SIZE);
+				new SimpleListWorkProvider(nodes, batchSize), workerThreads, FIXED_BATCH_SIZE, null, null, FIXED_BATCH_SIZE);
 
                 final ScriptedBatchProcessWorker scriptedBatchProcessWorker = new ScriptedBatchProcessWorker(
                     runAsSystem,
                     batchScope,
                     processorFunction,
-                    nodeRefs,
+                    nodes,
                     beforeProcessFunction,
                     afterProcessFunction,
                     Context.getCurrentContext(),
@@ -271,10 +290,10 @@ public class BatchScriptFacade extends BaseProcessorExtension implements Scopeab
         
         private static class Runner implements Runnable {
             
-            private final BatchProcessor<Collection<NodeRef>> processor;
+            private final BatchProcessor<Collection<ScriptNode>> processor;
             private final ScriptedBatchProcessWorker scriptedBatchProcessWorker;
 
-            private Runner(BatchProcessor<Collection<NodeRef>> processor, ScriptedBatchProcessWorker scriptedBatchProcessWorker) {
+            private Runner(BatchProcessor<Collection<ScriptNode>> processor, ScriptedBatchProcessWorker scriptedBatchProcessWorker) {
                 this.processor = processor;
                 this.scriptedBatchProcessWorker = scriptedBatchProcessWorker;
             }

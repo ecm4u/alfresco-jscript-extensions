@@ -20,7 +20,7 @@ import java.util.List;
  * @author jgoldhammer
  *
  */
-public final class ScriptedBatchProcessWorker implements BatchProcessWorker<Collection<NodeRef>> {
+public final class ScriptedBatchProcessWorker implements BatchProcessWorker<Collection<ScriptNode>> {
 	private final boolean runAsSystem;
 	private final Scriptable batchScope;
 	private final String processorFunction;
@@ -32,9 +32,9 @@ public final class ScriptedBatchProcessWorker implements BatchProcessWorker<Coll
 	private ServiceRegistry serviceRegistry;
 	private String beforeProcessFunction;
 	private String afterProcessFuntion;
-	private List<NodeRef> nodeRefs;
+	private List<ScriptNode> nodeRefs;
 
-	ScriptedBatchProcessWorker(boolean runAsSystem, Scriptable batchScope, String processorFunction, List<NodeRef> nodeRefs, String beforeProcessFunction, String afterProcessFuntion, Context context,
+	ScriptedBatchProcessWorker(boolean runAsSystem, Scriptable batchScope, String processorFunction, List<ScriptNode> nodeRefs, String beforeProcessFunction, String afterProcessFuntion, Context context,
 			ServiceRegistry serviceRegistry, ScriptService scriptService) {
 		this.runAsSystem = runAsSystem;
 		this.batchScope = batchScope;
@@ -54,8 +54,8 @@ public final class ScriptedBatchProcessWorker implements BatchProcessWorker<Coll
 		}
 
 		if(StringUtils.hasText(beforeProcessFunction)){
-			Object[] scriptNodes = createScriptNodes(this.nodeRefs);
-			scriptService.executeScriptString("javascript", beforeProcessFunction+BEFORE_PROCESSING_SCRIPT, createNodesModel(scriptNodes));
+			
+			scriptService.executeScriptString("javascript", beforeProcessFunction+BEFORE_PROCESSING_SCRIPT, createNodesModel(nodeRefs.toArray()));
 		}
 
 	}
@@ -63,38 +63,36 @@ public final class ScriptedBatchProcessWorker implements BatchProcessWorker<Coll
 	@Override
 	public void afterProcess() throws Throwable {
 		if(StringUtils.hasLength(afterProcessFuntion)){
-			Object[] scriptNodes = createScriptNodes(this.nodeRefs);
-			scriptService.executeScriptString("javascript", afterProcessFuntion+AFTER_PROCESSING_SCRIPT, createNodesModel(scriptNodes));
+			scriptService.executeScriptString("javascript", afterProcessFuntion+AFTER_PROCESSING_SCRIPT, createNodesModel(nodeRefs.toArray()));
 		}
 	}
 
 	@Override
-	public String getIdentifier(Collection<NodeRef> entries) {
+	public String getIdentifier(Collection<ScriptNode> entries) {
 		return entries.toString();
 	}
 
 	@Override
-	public void process(Collection<NodeRef> entries) throws Throwable {
-		Object[] scriptNodes = createScriptNodes(entries);
+	public void process(Collection<ScriptNode> entries) throws Throwable {
 
 		String javascriptCode = processorFunction + PROCESSING_SCRIPT;
-		scriptService.executeScriptString("javascript", javascriptCode, createNodesModel(scriptNodes));
+		scriptService.executeScriptString("javascript", javascriptCode, createNodesModel(entries.toArray()));
 
 	}
-
-	/**
-	 * @param entries
-	 * @return
-	 */
-	private Object[] createScriptNodes(Collection<NodeRef> entries) {
-		Object[] scriptNodes = new Object[entries.size()];
-		int counter = 0;
-		for (NodeRef nodeRef : entries) {
-			scriptNodes[counter] = new ScriptNode(nodeRef, serviceRegistry);
-			counter++;
-		}
-		return scriptNodes;
-	}
+//
+//	/**
+//	 * @param entries
+//	 * @return
+//	 */
+//	private Object[] createScriptNodes(Collection<NodeRef> entries) {
+//		Object[] scriptNodes = new Object[entries.size()];
+//		int counter = 0;
+//		for (NodeRef nodeRef : entries) {
+//			scriptNodes[counter] = new ScriptNode(nodeRef, serviceRegistry);
+//			counter++;
+//		}
+//		return scriptNodes;
+//	}
 
 	/**
 	 * creates
